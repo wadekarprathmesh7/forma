@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forma — System Icon Set</title>
+<meta name="description" content="Browse, filter and download icons from the Forma System Icon Set." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div class="brand">
+      <img class="brand-logo" src="assets/logo.svg" alt="Forma" width="140" height="36" />
+      <span class="brand-title">System Icon Set</span>
+    </div>
+    <div class="header-search">
+      <button class="search-icon" type="button" tabindex="-1" aria-hidden="true"></button>
+      <input id="searchInput" class="search-input" type="text" placeholder="Search icon" autocomplete="off" />
+      <button id="searchClear" class="search-clear" type="button" hidden aria-label="Clear search"></button>
+    </div>
+  </header>
+
+  <div class="body">
+    <aside class="sidebar">
+      <h2 class="sidebar-title">Filters</h2>
+
+      <section class="filter-block">
+        <h3 class="filter-label">Weights</h3>
+        <div class="weight-slider-wrap">
+          <div class="weight-slider-track" id="weightTrack" role="radiogroup" aria-label="Icon weight">
+            <div class="weight-slider-fill" id="weightFill"></div>
+            <button type="button" class="weight-dot" data-index="0" role="radio" aria-checked="true" aria-label="Light"></button>
+            <button type="button" class="weight-dot" data-index="1" role="radio" aria-checked="false" aria-label="Medium"></button>
+            <button type="button" class="weight-dot" data-index="2" role="radio" aria-checked="false" aria-label="Bold"></button>
+            <button type="button" class="weight-dot" data-index="3" role="radio" aria-checked="false" aria-label="Filled"></button>
+          </div>
+        </div>
+        <div class="weight-tick-labels" id="weightLabels">
+          <span data-weight="light" class="active">Light</span>
+          <span data-weight="medium">Medium</span>
+          <span data-weight="bold">Bold</span>
+          <span data-weight="filled">Filled</span>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section class="filter-block">
+        <h3 class="filter-label">Colour</h3>
+        <div class="colour-swatches" id="colourSwatches">
+          <button class="swatch active" type="button" data-colour="#000000" style="--sw:#000000" aria-label="Black"><span class="swatch-check"></span></button>
+          <button class="swatch" type="button" data-colour="#FFFFFF" style="--sw:#FFFFFF" aria-label="White"><span class="swatch-check"></span></button>
+          <button class="swatch" type="button" data-colour="#9E9E9E" style="--sw:#9E9E9E" aria-label="Grey"><span class="swatch-check"></span></button>
+          <button class="swatch" type="button" data-colour="#2979FF" style="--sw:#2979FF" aria-label="Blue"><span class="swatch-check"></span></button>
+          <button class="swatch" type="button" data-colour="#00C853" style="--sw:#00C853" aria-label="Green"><span class="swatch-check"></span></button>
+          <button class="swatch" type="button" data-colour="#FFD600" style="--sw:#FFD600" aria-label="Yellow"><span class="swatch-check"></span></button>
+          <button class="swatch" type="button" data-colour="#FF3D00" style="--sw:#FF3D00" aria-label="Red"><span class="swatch-check"></span></button>
+          <button class="swatch swatch-multi" type="button" id="multiSwatch" aria-label="Custom colour"><span class="swatch-check"></span></button>
+        </div>
+        <div class="hex-field">
+          <input id="hexInput" type="text" placeholder="#000000" maxlength="7" spellcheck="false" />
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section class="filter-block">
+        <h3 class="filter-label">Category</h3>
+        <div class="category-list" id="categoryList"></div>
+      </section>
+    </aside>
+
+    <main class="content">
+      <h2 class="content-title" id="contentTitle">Alerts &amp; Feedback</h2>
+      <div class="icon-grid" id="iconGrid"></div>
+      <div class="empty-state" id="emptyState" hidden>
+        <p id="emptyStateText">No results found</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="popup-overlay" id="downloadOverlay" hidden>
+  <div class="download-popup" role="dialog" aria-modal="true" aria-labelledby="popupIconName">
+    <div class="popup-header">
+      <h3 id="popupIconName">icon-name</h3>
+      <button class="icon-btn" id="popupCloseBtn" aria-label="Close">
+        <img src="assets/close.svg" alt="" />
+      </button>
+    </div>
+    <div class="popup-body">
+      <div class="popup-icon-preview" id="popupIconPreview"></div>
+      <dl class="popup-meta">
+        <div class="popup-meta-row"><dt>Weight:</dt><dd id="popupWeight">Light</dd></div>
+        <div class="popup-meta-row"><dt>Colour:</dt><dd><span class="meta-dot" id="popupColourDot"></span><span id="popupColourHex">#424242</span></dd></div>
+        <div class="popup-meta-row"><dt>Category:</dt><dd id="popupCategory">Alerts &amp; Feedback</dd></div>
+      </dl>
+    </div>
+    <div class="popup-actions">
+      <button class="icon-btn round" id="shareBtn" aria-label="Copy share link">
+        <img src="assets/share.svg" alt="" />
+      </button>
+      <button class="icon-btn round" id="copyBtn" aria-label="Copy SVG code">
+        <img src="assets/copy.svg" alt="" />
+      </button>
+      <button class="pill-btn dark" id="downloadSvgBtn" type="button">
+        <img src="assets/download.svg" alt="" /> SVG
+      </button>
+      <button class="pill-btn dark" id="downloadPngBtn" type="button">
+        <img src="assets/download.svg" alt="" /> PNG
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="popup-overlay" id="colourOverlay" hidden>
+  <div class="colour-picker" id="colourPicker" role="dialog" aria-modal="true" aria-label="Custom colour picker">
+    <div class="picker-sv" id="pickerSv">
+      <div class="picker-sv-thumb" id="pickerSvThumb"></div>
+    </div>
+    <div class="picker-hue-row">
+      <button class="icon-btn round" id="dropperBtn" type="button" aria-label="Pick colour from screen">
+        <img src="assets/dropper.svg" alt="" />
+      </button>
+      <div class="picker-swatch-preview" id="pickerSwatchPreview"></div>
+      <div class="picker-hue" id="pickerHue">
+        <div class="picker-hue-thumb" id="pickerHueThumb"></div>
+      </div>
+    </div>
+    <div class="picker-mode-tabs" id="pickerModeTabs">
+      <label class="radio-label"><input type="radio" name="colourMode" value="rgb" checked /><span class="radio-dot"></span>RGB</label>
+      <label class="radio-label"><input type="radio" name="colourMode" value="hsl" /><span class="radio-dot"></span>HSL</label>
+      <label class="radio-label"><input type="radio" name="colourMode" value="hex" /><span class="radio-dot"></span>Hex</label>
+    </div>
+    <div class="picker-fields" id="pickerFields"></div>
+    <div class="picker-actions">
+      <button class="pill-btn outline" id="colourCancelBtn" type="button">Cancel</button>
+      <button class="pill-btn dark full" id="colourApplyBtn" type="button">Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

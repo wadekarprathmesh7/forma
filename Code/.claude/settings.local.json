@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__4820ed15-bc12-49e0-a3df-29b810f493d4__get_design_context",
+      "mcp__4820ed15-bc12-49e0-a3df-29b810f493d4__get_metadata",
+      "mcp__4820ed15-bc12-49e0-a3df-29b810f493d4__get_screenshot",
+      "Bash(curl -sL -o \"/private/tmp/claude-501/-Users-prathmeshwadekar-Documents-Work-Figma-Forma-Icon-Set-Code/7eaf6bf6-ecb5-4804-a37d-dbc6f614ff84/scratchpad/figma-ref/hover-select.png\" \"https://www.figma.com/api/mcp/asset/72605985-d742-44bc-b1ed-81cbc4e83f75\")",
+      "Bash(curl -sL -o \"/private/tmp/claude-501/-Users-prathmeshwadekar-Documents-Work-Figma-Forma-Icon-Set-Code/7eaf6bf6-ecb5-4804-a37d-dbc6f614ff84/scratchpad/figma-ref/empty-state.png\" \"https://www.figma.com/api/mcp/asset/af8efd91-b320-4f48-b05e-f603256c189e\")",
+      "Bash(curl -sIL \"https://www.figma.com/api/mcp/asset/712b1c92-fd47-414c-abd3-a80cfd9f7518\")",
+      "Bash(curl -sL \"https://www.figma.com/api/mcp/asset/712b1c92-fd47-414c-abd3-a80cfd9f7518\" -o union-test.out)",
+      "Bash(curl -sL -o \"ui/check.svg\" \"https://www.figma.com/api/mcp/asset/62466906-e2d1-43bc-bbb4-504314182a6a\")",
+      "Bash(curl -sL -o \"alerts-feedback/thumbs-up.svg\" \"https://www.figma.com/api/mcp/asset/0095f5be-7834-4059-8e15-c756b16eda97\")",
+      "Bash(python3 \"/private/tmp/claude-501/-Users-prathmeshwadekar-Documents-Work-Figma-Forma-Icon-Set-Code/7eaf6bf6-ecb5-4804-a37d-dbc6f614ff84/scratchpad/normalize.py\")",
+      "Bash(ls \"/Users/prathmeshwadekar/Documents/Work/Figma/Forma Icon Set/Code/.claude\" 2>/dev/null; cat \"/Users/prathmeshwadekar/Documents/Work/Figma/Forma Icon Set/Code/.claude/launch.json\" 2>/dev/null; echo \"---\"; cp /tmp/svgtest.html \"/Users/prathmeshwadekar/Documents/Work/Figma/Forma Icon Set/Code/svgtest.html\")",
+      "Bash(python3 -m http.server 4173)",
+      "Bash(curl -sI http://localhost:4173/svgtest.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:4173/index.html)",
+      "Bash(python3 -)",
+      "Bash(python3 scripts/build_manifest.py)",
+      "Bash(node -c js/data.js)",
+      "Bash(python3 -c ' *)",
+      "Bash(shasum js/data.js)",
+      "Bash(lsof -ti:4173)",
+      "Bash(xargs -r kill)",
+      "Read(//usr/bin/**)",
+      "Bash(/usr/bin/python3 --version)",
+      "Bash(disown)",
+      "Bash(curl -sI http://localhost:4173/index.html)",
+      "Bash(jq -r .[0].text /Users/prathmeshwadekar/.claude/projects/-Users-prathmeshwadekar-Documents-Work-Figma-Forma-Icon-Set-Code/7eaf6bf6-ecb5-4804-a37d-dbc6f614ff84/tool-results/mcp-4820ed15-bc12-49e0-a3df-29b810f493d4-get_metadata-1784523682700.txt)",
+      "Bash(curl -sL \"https://www.figma.com/api/mcp/asset/5f3618a3-8f67-42d2-b4e4-bd3cda8269ad\")",
+      "Bash(python3 \"/private/tmp/claude-501/-Users-prathmeshwadekar-Documents-Work-Figma-Forma-Icon-Set-Code/7eaf6bf6-ecb5-4804-a37d-dbc6f614ff84/scratchpad/extract_manifest.py\")",
+      "Bash(curl -sL -w \"\\\\nHTTP_CODE:%{http_code}\\\\n\" \"https://www.figma.com/api/mcp/asset/31511ece-8139-4e7b-9188-4b7a117233b6\")",
+      "Bash(jq -r .[0].text /Users/prathmeshwadekar/.claude/projects/-Users-prathmeshwadekar-Documents-Work-Figma-Forma-Icon-Set-Code/7eaf6bf6-ecb5-4804-a37d-dbc6f614ff84/tool-results/mcp-4820ed15-bc12-49e0-a3df-29b810f493d4-get_design_context-1784524916895.txt)",
+      "Bash(grep -n \"^\\\\.app\\\\|^\\\\.header {\\\\|^\\\\.body {\\\\|^\\\\.sidebar {\\\\|^\\\\.content {\\\\|^html, body\" \"/Users/prathmeshwadekar/Documents/Work/Figma/Forma Icon Set/Code/css/styles.css\")"
+    ]
+  }
+}

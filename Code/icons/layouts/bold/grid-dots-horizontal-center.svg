@@ -1,0 +1,12 @@
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg x="-1.5000" y="-1.1256" width="27.0000" height="26.2512" viewBox="0 0 18 17.5" fill="none">
+    <g id="Icon">
+<path id="Vector 21" d="M1 8.75H17" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector 25" d="M1 0.750001H17" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+<path id="Vector 22" d="M9 0.750001V16.75" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+<path id="Vector 26" d="M17 0.750001V16.75" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+<path id="Vector 23" d="M17 16.75H0.999999" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+<path id="Vector 24" d="M1 16.75V0.75" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 3"/>
+</g>
+  </svg>
+</svg>
