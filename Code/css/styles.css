@@ -207,43 +207,27 @@ img { display: block; max-width: 100%; }
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 4px;
-  border-radius: 4px;
+  height: 16px;
+  border-radius: 16px;
   background: rgba(0, 0, 0, 0.1);
-}
-
-.weight-slider-fill {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0%;
-  border-radius: 4px;
-  background: var(--accent);
-  pointer-events: none;
-  transition: width 0.15s ease;
 }
 
 .weight-dot {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
-  width: 4px;
-  height: 4px;
+  width: 16px;
+  height: 16px;
   padding: 0;
   border: none;
   border-radius: 50%;
   background: var(--border-tertiary);
   cursor: pointer;
-  transition: width 0.15s ease, height 0.15s ease, background 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .weight-dot.active {
-  width: 16px;
-  height: 16px;
   background: var(--accent);
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px var(--accent);
 }
 
 .weight-tick-labels {
@@ -521,7 +505,7 @@ img { display: block; max-width: 100%; }
   background: var(--dark-bg);
   color: var(--text-invert);
 }
-.pill-btn.dark img { width: 16px; height: 16px; filter: invert(1) brightness(2); }
+.pill-btn.dark img { width: 16px; height: 16px; }
 .pill-btn.dark:hover { background: #1f1f1f; }
 
 .pill-btn.outline {

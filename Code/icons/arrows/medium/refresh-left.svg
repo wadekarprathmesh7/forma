@@ -1,9 +1,5 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="-1.2864" y="-0.9864" width="26.5728" height="25.9728" viewBox="0 0 15.5 19.7426" fill="none">
-    <g id="Icon">
-<path id="Ellipse 41" d="M7.75 16.7502C3.88401 16.7502 0.75 13.6162 0.75 9.75023C0.75 7.8173 1.53344 6.06736 2.80011 4.80062M7.75 2.75023C11.616 2.75023 14.75 5.88423 14.75 9.75023C14.75 11.6804 13.9688 13.4282 12.7052 14.6945" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Rectangle 3" d="M8.87132 4.99264L6.75 2.87132L8.87132 0.75" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Rectangle 4" d="M6.87132 18.9926L8.99265 16.8713L6.87132 14.75" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</g>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 19C8.13401 19 5 15.866 5 12C5 10.0671 5.78344 8.31713 7.05011 7.0504M12 5C15.866 5 19 8.13401 19 12C19 13.9302 18.2188 15.6779 16.9552 16.9442" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M13.1213 7.24241L11 5.12109L13.1213 2.99977" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.1214 21.2424L13.2427 19.1211L11.1214 16.9998" stroke="var(--stroke-0, #424242)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

@@ -4,7 +4,7 @@
     {
       "name": "static",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["/Users/prathmeshwadekar/Documents/Work/Figma/Forma Icon Set/Code/scripts/dev_server.py"],
+      "runtimeArgs": ["/Users/prathmeshwadekar/Documents/Work/Figma/Forma Icon Set/forma/Code/scripts/dev_server.py"],
       "port": 4173,
       "autoPort": true
     }

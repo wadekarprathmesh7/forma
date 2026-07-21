@@ -13,7 +13,6 @@
 
   const els = {
     weightTrack: document.getElementById("weightTrack"),
-    weightFill: document.getElementById("weightFill"),
     weightLabels: document.getElementById("weightLabels"),
     colourSwatches: document.getElementById("colourSwatches"),
     multiSwatch: document.getElementById("multiSwatch"),
@@ -258,8 +257,6 @@
   });
 
   function updateWeightSliderVisuals() {
-    const pct = (state.weightIndex / 3) * 100;
-    els.weightFill.style.width = `${pct}%`;
     els.weightTrack.querySelectorAll(".weight-dot").forEach((dot, i) => {
       const isActive = i === state.weightIndex;
       dot.classList.toggle("active", isActive);

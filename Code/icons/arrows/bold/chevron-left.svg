@@ -1,5 +1,3 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="-4.0008" y="-1.9992" width="32.0016" height="27.9984" viewBox="0 0 8 14" fill="none">
-    <path id="Vector 1" d="M7 1L1 7L7 13" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 6L9 12L15 18" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
