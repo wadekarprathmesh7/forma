@@ -1,8 +1,3 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="-1.9992" y="-1.9992" width="27.9984" height="27.9984" viewBox="0 0 14 14" fill="none">
-    <g id="Icon Frame">
-<path id="Vector 1" d="M7 1L1 7L7 13" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-<path id="Vector 2" d="M13 7H1" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round"/>
-</g>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg x="6.7563" y="6.7563" width="10.4875" height="10.4875" viewBox="0 0 10.4853 10.4853" fill="none"><path id="Vector" d="M9.48528 1L9.48528 9.48528L1 9.48528M9.48528 9.48528L1 1" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </svg>

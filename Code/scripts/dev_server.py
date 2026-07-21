@@ -19,6 +19,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, fmt, *args):
         pass  # keep stdout quiet
 
+    def end_headers(self):
+        # Local preview only: never let the browser cache anything, so
+        # edited icons/CSS/JS always show up on refresh instead of a stale
+        # heuristically-cached copy (SimpleHTTPRequestHandler sends no
+        # Cache-Control by default, which browsers are free to cache anyway).
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
 
 class ReusableServer(socketserver.TCPServer):
     allow_reuse_address = True
