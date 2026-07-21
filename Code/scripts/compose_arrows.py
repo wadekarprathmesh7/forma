@@ -169,6 +169,16 @@ ICONS = {
         bleed={"light": (-4.17, -4.17), "medium": (-6.25, -6.25), "boldfilled": (-8.33, -8.33)},
         asset={"light": "8fe5ed83-90cd-46fa-a28e-42818c5784e0", "medium": "94bfa0bc-90ce-4d98-a77e-f7cf6f455c0e", "boldfilled": "7cc189c9-1b4d-4ded-9781-134af32e2843"},
     ),
+    "switch-vertical": dict(
+        box=(25, 18.85, 25.42, 18.65), rotation=0,
+        bleed={"light": (-4.2, -3.33), "medium": (-6.3, -5), "boldfilled": (-8.4, -6.67)},
+        asset={"light": "e87f6567-28a5-446a-accc-71b2613af419", "medium": "8ffa8433-bc2f-4b90-9ee9-e3ee02d7a258", "boldfilled": "b7d5c431-1e54-4db1-8e23-234ca78837af"},
+    ),
+    "switch-horizontal": dict(
+        box=(18.65, 25, 18.85, 25.42), rotation=0,
+        bleed={"light": (-3.33, -4.2), "medium": (-5, -6.3), "boldfilled": (-6.67, -8.4)},
+        asset={"light": "a54e0421-bfdf-435b-baf2-b194e28f6153", "medium": "3fef5eaf-5742-4376-8f0c-00300c258c6d", "boldfilled": "41851be1-26a8-49a8-af21-666397ab9177"},
+    ),
 }
 
 
