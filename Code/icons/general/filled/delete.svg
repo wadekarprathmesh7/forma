@@ -1,5 +1,7 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="5.5008" y="3.4992" width="12.9984" height="17.0016" viewBox="0 0 13 17" fill="none">
-    <path id="Union" d="M1.4502 6.00293C1.72493 5.97546 1.96955 6.17547 1.99707 6.4502L2.81738 14.6494C2.89412 15.416 3.53917 15.9998 4.30957 16H8.69043C9.46083 15.9998 10.1059 15.416 10.1826 14.6494L11.0029 6.4502C11.0305 6.17547 11.2751 5.97546 11.5498 6.00293C11.8245 6.03045 12.0245 6.27507 11.9971 6.5498L11.1777 14.749C11.0498 16.0268 9.97455 16.9998 8.69043 17H4.30957C3.02545 16.9998 1.95017 16.0268 1.82227 14.749L1.00293 6.5498C0.975456 6.27507 1.17547 6.03045 1.4502 6.00293ZM12.5 3C12.7761 3 13 3.22386 13 3.5C13 3.77614 12.7761 4 12.5 4H0.5C0.223858 4 0 3.77614 0 3.5C0 3.22386 0.223858 3 0.5 3H12.5ZM7.5 0C7.77614 0 8 0.223858 8 0.5C8 0.776142 7.77614 1 7.5 1H5.5C5.22386 1 5 0.776142 5 0.5C5 0.223858 5.22386 0 5.5 0H7.5Z" fill="var(--fill-0, #424242)"/>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg x="5.0004" y="3.0009" width="13.9992" height="17.4990" viewBox="0 0 14 17.5" fill="none"><g id="Icon Background">
+<path id="Rectangle 6" d="M11.1801 15.199L12 7H2L2.8199 15.199C2.92214 16.2214 3.78247 17 4.80998 17H9.19002C10.2175 17 11.0779 16.2214 11.1801 15.199Z" fill="var(--fill-0, #424242)" stroke="var(--stroke-0, #424242)" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector 15" d="M1 4H13" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Vector 16" d="M6 1H8" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g></svg>
 </svg>

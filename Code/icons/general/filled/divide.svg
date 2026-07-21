@@ -1,5 +1,7 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="4.5000" y="5.5008" width="15.0000" height="12.9984" viewBox="0 0 15 13" fill="none">
-    <path id="Union" d="M7.5 10C8.32843 10 9 10.6716 9 11.5C9 12.3284 8.32843 13 7.5 13C6.67157 13 6 12.3284 6 11.5C6 10.6716 6.67157 10 7.5 10ZM7.5 11C7.22386 11 7 11.2239 7 11.5C7 11.7761 7.22386 12 7.5 12C7.77614 12 8 11.7761 8 11.5C8 11.2239 7.77614 11 7.5 11ZM14.6006 5.84277C14.8284 5.88927 14.9998 6.09148 15 6.33301C15 6.57469 14.8285 6.77668 14.6006 6.82324L14.5 6.83301H0.5C0.223858 6.83301 0 6.60915 0 6.33301C0.000223037 6.05706 0.223995 5.83301 0.5 5.83301H14.5L14.6006 5.84277ZM7.5 0C8.32843 0 9 0.671573 9 1.5C9 2.32843 8.32843 3 7.5 3C6.67157 3 6 2.32843 6 1.5C6 0.671573 6.67157 1.28851e-07 7.5 0ZM7.5 1C7.22386 1 7 1.22386 7 1.5C7 1.77614 7.22386 2 7.5 2C7.77614 2 8 1.77614 8 1.5C8 1.22386 7.77614 1 7.5 1Z" fill="var(--fill-0, #424242)"/>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg x="3.9995" y="5.0004" width="16.0010" height="13.9992" viewBox="0 0 16 14" fill="none"><g id="Icon Background">
+<path id="Vector 3" d="M1 6.83342H15" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round"/>
+<ellipse id="Ellipse 53" cx="8" cy="2" rx="1" ry="1" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round"/>
+<ellipse id="Ellipse 54" cx="8" cy="12" rx="1" ry="1" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round"/>
+</g></svg>
 </svg>

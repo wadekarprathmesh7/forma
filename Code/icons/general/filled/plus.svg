@@ -1,5 +1,6 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="5.5008" y="5.5008" width="12.9984" height="12.9984" viewBox="0 0 13 13" fill="none">
-    <path id="Union" d="M6.5 0C6.77614 0 7 0.223858 7 0.5V6H12.5C12.7761 6 13 6.22386 13 6.5C13 6.77614 12.7761 7 12.5 7H7V12.5C7 12.7761 6.77614 13 6.5 13C6.22386 13 6 12.7761 6 12.5V7H0.5C0.223858 7 0 6.77614 0 6.5C0 6.22386 0.223858 6 0.5 6H6V0.5C6 0.223858 6.22386 0 6.5 0Z" fill="var(--fill-0, #424242)"/>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg x="5.0004" y="5.0004" width="13.9992" height="13.9992" viewBox="0 0 14 14" fill="none"><g id="Group 223">
+<path id="Vector 3" d="M1 7H13" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round"/>
+<path id="Vector 4" d="M7 1V13" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round"/>
+</g></svg>
 </svg>

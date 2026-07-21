@@ -1,5 +1,16 @@
-<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <svg x="3.4992" y="2.5008" width="17.0016" height="18.9984" viewBox="0 0 17 19" fill="none">
-    <path id="Union" d="M8.5 16C8.77614 16 9 16.2239 9 16.5V18.5C9 18.7761 8.77614 19 8.5 19C8.22386 19 8 18.7761 8 18.5V16.5C8 16.2239 8.22386 16 8.5 16ZM6.08398 15.7227C6.23716 15.4929 6.54758 15.4308 6.77734 15.584C7.00711 15.7372 7.06919 16.0476 6.91602 16.2773L5.91602 17.7773C5.76284 18.0071 5.45242 18.0692 5.22266 17.916C4.99289 17.7628 4.93081 17.4524 5.08398 17.2227L6.08398 15.7227ZM10.2227 15.584C10.4524 15.4308 10.7628 15.4929 10.916 15.7227L11.916 17.2227C12.0692 17.4524 12.0071 17.7628 11.7773 17.916C11.5476 18.0692 11.2372 18.0071 11.084 17.7773L10.084 16.2773C9.93081 16.0476 9.99289 15.7372 10.2227 15.584ZM5.5 5C5.77614 5 6 5.22386 6 5.5C6 5.77614 5.77614 6 5.5 6H4.5C2.567 6 1 7.567 1 9.5C1 11.433 2.567 13 4.5 13H5.5C5.77614 13 6 13.2239 6 13.5C6 13.7761 5.77614 14 5.5 14H4.5C2.01472 14 0 11.9853 0 9.5C0 7.01472 2.01472 5 4.5 5H5.5ZM12.5 5C14.9853 5 17 7.01472 17 9.5C17 11.9853 14.9853 14 12.5 14H11.5C11.2239 14 11 13.7761 11 13.5C11 13.2239 11.2239 13 11.5 13H12.5C14.433 13 16 11.433 16 9.5C16 7.567 14.433 6 12.5 6H11.5C11.2239 6 11 5.77614 11 5.5C11 5.22386 11.2239 5 11.5 5H12.5ZM5.22266 1.08398C5.45242 0.930808 5.76284 0.992892 5.91602 1.22266L6.91602 2.72266C7.06919 2.95242 7.00711 3.26284 6.77734 3.41602C6.54758 3.56919 6.23716 3.50711 6.08398 3.27734L5.08398 1.77734C4.93081 1.54758 4.99289 1.23716 5.22266 1.08398ZM11.084 1.22266C11.2372 0.992892 11.5476 0.930808 11.7773 1.08398C12.0071 1.23716 12.0692 1.54758 11.916 1.77734L10.916 3.27734C10.7628 3.50711 10.4524 3.56919 10.2227 3.41602C9.99289 3.26284 9.93081 2.95242 10.084 2.72266L11.084 1.22266ZM8.5 0C8.77614 1.50072e-10 9 0.223858 9 0.5V2.5C9 2.77614 8.77614 3 8.5 3C8.22386 3 8 2.77614 8 2.5V0.5C8 0.223858 8.22386 0 8.5 0Z" fill="var(--fill-0, #424242)"/>
-  </svg>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg x="3.0009" y="1.9992" width="17.9982" height="20.0016" viewBox="0 0 18 20" fill="none"><g id="Icon Background">
+<path id="Rectangle 64" d="M6 6H5C2.79086 6 1 7.79086 1 10C1 12.2091 2.79086 14 5 14H6" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Rectangle 65" d="M12 6H13C15.2091 6 17 7.79086 17 10C17 12.2091 15.2091 14 13 14H12" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="Icon Background_2">
+<path id="Line 43" d="M9 3L9 1" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line 44" d="M6 3.5L5 2" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line 45" d="M12 3.5L13 2" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g id="Icon Background_3">
+<path id="Line 43_2" d="M9 17L9 19" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line 44_2" d="M6 16.5L5 18" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Line 45_2" d="M12 16.5L13 18" stroke="var(--stroke-0, #424242)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g></svg>
 </svg>
