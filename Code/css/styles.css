@@ -427,7 +427,7 @@ img { display: block; max-width: 100%; }
   border-radius: var(--radius-md);
 }
 
-.icon-tile-glyph svg { width: 24px; height: 24px; }
+.icon-tile-glyph svg { width: 48px; height: 48px; }
 
 .icon-tile-label {
   width: 100%;
@@ -564,7 +564,7 @@ img { display: block; max-width: 100%; }
   align-items: center;
   justify-content: center;
 }
-.popup-icon-preview svg { width: 24px; height: 24px; }
+.popup-icon-preview svg { width: 48px; height: 48px; }
 
 .popup-meta {
   margin: 0;
