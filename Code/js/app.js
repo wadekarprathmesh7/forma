@@ -142,12 +142,10 @@
         clearSearch();
         render();
       });
-      const dot = document.createElement("span");
-      dot.className = "category-radio";
       const text = document.createElement("span");
       text.className = "label";
       text.textContent = cat.name;
-      label.append(input, dot, text);
+      label.append(input, text);
       els.categoryList.appendChild(label);
     });
   }
