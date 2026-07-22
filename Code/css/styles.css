@@ -31,8 +31,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100%;
   background: var(--bg);
   color: var(--text-primary);
   font-family: var(--font-ui);
@@ -49,7 +48,7 @@ img { display: block; max-width: 100%; }
 .app {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 /* ---------- Header ---------- */
@@ -148,17 +147,14 @@ img { display: block; max-width: 100%; }
 
 .body {
   display: flex;
-  flex: 1;
-  align-items: stretch;
-  min-height: 0;
+  align-items: flex-start;
 }
 
 .sidebar {
   width: 360px;
   flex-shrink: 0;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  position: sticky;
+  top: 0;
   padding: 48px;
   border-right: 1px solid var(--border-primary);
   display: flex;
@@ -383,9 +379,6 @@ img { display: block; max-width: 100%; }
 
 .content {
   flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   padding: 48px;
   min-width: 0;
 }
@@ -791,17 +784,14 @@ img { display: block; max-width: 100%; }
 /* ---------- Responsive ---------- */
 
 @media (max-width: 900px) {
-  html, body { height: auto; overflow: visible; }
-  .app { height: auto; }
-  .body { flex-direction: column; overflow-y: visible; }
+  .body { flex-direction: column; }
   .sidebar {
     width: 100%;
-    height: auto;
-    overflow-y: visible;
+    position: static;
     border-right: none;
     border-bottom: 1px solid var(--border-primary);
     padding: 32px 24px;
   }
-  .content { height: auto; overflow-y: visible; padding: 32px 24px; }
+  .content { padding: 32px 24px; }
   .header { padding: 16px 24px; height: auto; }
 }
