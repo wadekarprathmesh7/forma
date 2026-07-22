@@ -376,6 +376,54 @@ img { display: block; max-width: 100%; }
   white-space: nowrap;
 }
 
+/* ---------- Sidebar footer ---------- */
+
+.sidebar-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+.footer-credit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.footer-credit-label {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.footer-credit-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.footer-link img { width: 24px; height: 24px; }
+.footer-link:hover { opacity: 0.7; }
+
 /* ---------- Main content / grid ---------- */
 
 .content {
