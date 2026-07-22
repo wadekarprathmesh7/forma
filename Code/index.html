@@ -18,6 +18,9 @@
       <img class="brand-logo" src="assets/logo.svg" alt="Forma" width="140" height="36" />
       <span class="brand-title">System Icon Set</span>
     </div>
+    <button class="icon-btn filter-toggle" id="filterToggleBtn" type="button" aria-label="Show filters" aria-expanded="false" aria-controls="sidebar">
+      <img src="assets/filter.svg" alt="" />
+    </button>
     <div class="header-search">
       <button class="search-icon" type="button" tabindex="-1" aria-hidden="true"></button>
       <input id="searchInput" class="search-input" type="text" placeholder="Search icon" autocomplete="off" />
@@ -26,8 +29,14 @@
   </header>
 
   <div class="body">
-    <aside class="sidebar">
-      <h2 class="sidebar-title">Filters</h2>
+    <div class="sidebar-overlay" id="sidebarOverlay" hidden></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Filters</h2>
+        <button class="icon-btn sidebar-close" id="sidebarCloseBtn" type="button" aria-label="Close filters">
+          <img src="assets/close.svg" alt="" />
+        </button>
+      </div>
 
       <section class="filter-block">
         <h3 class="filter-label">Weights</h3>

@@ -25,6 +25,11 @@
     searchInput: document.getElementById("searchInput"),
     searchClear: document.getElementById("searchClear"),
 
+    sidebar: document.getElementById("sidebar"),
+    sidebarOverlay: document.getElementById("sidebarOverlay"),
+    filterToggleBtn: document.getElementById("filterToggleBtn"),
+    sidebarCloseBtn: document.getElementById("sidebarCloseBtn"),
+
     downloadOverlay: document.getElementById("downloadOverlay"),
     popupIconName: document.getElementById("popupIconName"),
     popupIconPreview: document.getElementById("popupIconPreview"),
@@ -50,6 +55,24 @@
     colourCancelBtn: document.getElementById("colourCancelBtn"),
     colourApplyBtn: document.getElementById("colourApplyBtn"),
   };
+
+  // ---------- Mobile filter sidebar ----------
+
+  function openSidebar() {
+    els.sidebar.classList.add("open");
+    els.sidebarOverlay.hidden = false;
+    els.filterToggleBtn.setAttribute("aria-expanded", "true");
+  }
+
+  function closeSidebar() {
+    els.sidebar.classList.remove("open");
+    els.sidebarOverlay.hidden = true;
+    els.filterToggleBtn.setAttribute("aria-expanded", "false");
+  }
+
+  els.filterToggleBtn.addEventListener("click", openSidebar);
+  els.sidebarCloseBtn.addEventListener("click", closeSidebar);
+  els.sidebarOverlay.addEventListener("click", closeSidebar);
 
   // ---------- Colour helpers ----------
 
@@ -141,6 +164,7 @@
         state.category = cat.slug;
         clearSearch();
         render();
+        closeSidebar();
       });
       const text = document.createElement("span");
       text.className = "label";
@@ -416,6 +440,7 @@
     if (e.key === "Escape") {
       if (!els.downloadOverlay.hidden) closeDownloadPopup();
       if (!els.colourOverlay.hidden) closeColourPicker();
+      if (els.sidebar.classList.contains("open")) closeSidebar();
     }
   });
 
