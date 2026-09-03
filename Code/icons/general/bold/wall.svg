@@ -1,1 +1,5 @@
-
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="wall">
+<path id="Union" fill-rule="evenodd" clip-rule="evenodd" d="M20 5C20.5523 5 21 5.44772 21 6V18C21 18.5523 20.5523 19 20 19H4C3.44772 19 3 18.5523 3 18V6C3 5.44772 3.44772 5 4 5H20ZM13 17H19V15H13V17ZM5 17H11V15H5V17ZM5 13H7V11H5V13ZM9 13H15V11H9V13ZM17 13H19V11H17V13ZM5 9H11V7H5V9ZM13 9H19V7H13V9Z" fill="var(--fill-0, #424242)"/>
+</g>
+</svg>
