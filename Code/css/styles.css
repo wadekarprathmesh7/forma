@@ -143,6 +143,16 @@ img { display: block; max-width: 100%; }
 .search-clear::before { transform: translate(-50%, -50%) rotate(45deg); }
 .search-clear::after { transform: translate(-50%, -50%) rotate(-45deg); }
 
+.header-bmc {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.header-bmc img {
+  height: 40px !important;
+  width: auto !important;
+}
+
 /* ---------- Body layout ---------- */
 
 .body {
@@ -853,6 +863,7 @@ img { display: block; max-width: 100%; }
     max-height: 40px;
   }
   .header-search { order: 3; flex: 1 1 auto; }
+  .header-bmc { order: 4; }
 
   .sidebar-overlay {
     display: block;
