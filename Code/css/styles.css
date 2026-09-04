@@ -148,9 +148,18 @@ img { display: block; max-width: 100%; }
   align-items: center;
   flex-shrink: 0;
 }
-.header-bmc img {
-  height: 40px !important;
-  width: auto !important;
+/* The widget injects its own <style> with a plain .bmc-btn / .bmc-btn svg
+   selector; scope ours under .header-bmc so it wins on specificity and
+   scale every dimension to 70% (30% smaller), proportionately. */
+.header-bmc .bmc-btn {
+  min-width: 147px !important;
+  height: 42px !important;
+  border-radius: 8px !important;
+  font-size: 17px !important;
+  padding: 0 17px !important;
+}
+.header-bmc .bmc-btn svg {
+  height: 22px !important;
 }
 
 /* ---------- Body layout ---------- */
