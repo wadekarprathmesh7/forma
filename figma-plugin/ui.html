@@ -32,7 +32,11 @@
     padding: 15px 18px;
   }
   .brand { display: flex; align-items: center; gap: 8px; }
-  .brand img { height: 24px; width: auto; display: block; }
+  /* assets/logo.svg has preserveAspectRatio="none" plus width/height="100%"
+     baked into the file (from its original design export), which breaks
+     `width: auto` intrinsic-ratio sizing on <img> in some renderers. Set an
+     explicit width matching the real 184.8:48 aspect ratio instead. */
+  .brand img { height: 24px; width: 92.414px; flex-shrink: 0; display: block; }
   .brand span {
     font-family: "Inter", sans-serif;
     font-size: 14px;
