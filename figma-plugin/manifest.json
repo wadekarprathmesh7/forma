@@ -1,10 +1,11 @@
 {
   "name": "Forma - System Icon Set",
-  "id": "0",
+  "id": "1677755784433845112",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
   "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
       "https://wadekarprathmesh7.github.io",
