@@ -147,6 +147,7 @@ img { display: block; max-width: 100%; }
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  margin-left: auto;
 }
 /* The widget injects its own <style> with a plain .bmc-btn / .bmc-btn svg
    selector; scope ours under .header-bmc so it wins on specificity and
