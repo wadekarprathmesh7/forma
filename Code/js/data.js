@@ -12,7 +12,14 @@
 
 const WEIGHTS = ["light", "medium", "bold", "filled"];
 
+// "all" is a virtual category, not backed by an icons/all folder: it's
+// handled specially in app.js to aggregate every icon from every real
+// category below, sorted alphabetically. Keep it first so it's picked up
+// as the default selected category (state.category = CATEGORIES[0].slug).
+const ALL_ICONS_SLUG = "all";
+
 const CATEGORIES = [
+  { slug: ALL_ICONS_SLUG, name: "All icons" },
   { slug: "alerts-feedback", name: "Alerts & Feedback" },
   { slug: "arrows", name: "Arrows" },
   { slug: "charts", name: "Charts" },

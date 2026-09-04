@@ -196,6 +196,11 @@
       const q = state.search.trim().toLowerCase();
       return all.filter((ic) => ic.weights.includes(weight) && ic.name.includes(q));
     }
+    if (state.category === ALL_ICONS_SLUG) {
+      return all
+        .filter((ic) => ic.weights.includes(weight))
+        .sort((a, b) => a.slug.localeCompare(b.slug));
+    }
     return all.filter((ic) => ic.category === state.category && ic.weights.includes(weight));
   }
 
@@ -670,7 +675,9 @@
     await render();
 
     if (deepLinkIcon) {
-      const icon = getAllIcons().find((ic) => ic.slug === deepLinkIcon && ic.category === state.category);
+      const icon = getAllIcons().find(
+        (ic) => ic.slug === deepLinkIcon && (state.category === ALL_ICONS_SLUG || ic.category === state.category)
+      );
       if (icon && icon.weights.includes(currentWeight())) {
         selectIcon(icon, currentWeight());
       }
