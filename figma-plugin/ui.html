@@ -1,0 +1,647 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-header: #212121;
+    --text-invert: #fafafa;
+    --text-primary: #424242;
+    --border-alpha: rgba(0, 0, 0, 0.1);
+    --text-alpha-tertiary: rgba(0, 0, 0, 0.3);
+    --pill-bg: rgba(0, 0, 0, 0.1);
+    --toggle-active-bg: #424242;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: #fff; overflow: hidden; }
+  body { font-family: "Roboto Mono", monospace; color: var(--text-primary); font-size: 14px; }
+
+  .panel { display: flex; flex-direction: column; height: 100vh; width: 100%; }
+
+  /* ---------- Header ---------- */
+  .pheader {
+    background: var(--bg-header);
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 18px;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; }
+  .brand img { height: 24px; width: auto; display: block; }
+  .brand span {
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    color: var(--text-invert);
+    white-space: nowrap;
+  }
+  .close-btn {
+    width: 24px; height: 24px; padding: 0; border: none; background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .close-btn img { width: 24px; height: 24px; filter: invert(1); }
+
+  /* ---------- Search + category row ---------- */
+  .row1 {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px; flex-shrink: 0; gap: 12px;
+  }
+  .search-wrap { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .search-wrap img { width: 24px; height: 24px; flex-shrink: 0; opacity: 0.55; }
+  .search-wrap input {
+    border: none; outline: none; background: transparent; font-family: "Roboto Mono", monospace;
+    font-size: 14px; color: var(--text-primary); width: 100%; min-width: 0;
+  }
+  .search-wrap input::placeholder { color: var(--text-alpha-tertiary); }
+
+  .category-btn {
+    background: var(--pill-bg); border: none; border-radius: 4px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; padding: 4px 8px; flex-shrink: 0;
+    font-family: "Roboto Mono", monospace; font-weight: 500; font-size: 12px; color: var(--text-primary);
+    position: relative;
+  }
+  .category-btn img { width: 16px; height: 16px; }
+
+  /* ---------- Dividers ---------- */
+  .hdiv { height: 1px; width: 100%; background: var(--border-alpha); flex-shrink: 0; }
+  .vdiv { width: 1px; height: 56px; background: var(--border-alpha); flex-shrink: 0; }
+
+  /* ---------- Toolbar row 2: weight | format | colour ---------- */
+  .row2 { display: flex; align-items: stretch; flex-shrink: 0; }
+
+  .weight-section { flex: 1; min-width: 0; padding: 15px 16px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+  .weight-slider-track { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 8px; }
+  .weight-slider-track::before {
+    content: ""; position: absolute; left: 16px; right: 16px; top: 50%; height: 1px;
+    background: var(--border-alpha); transform: translateY(-50%);
+  }
+  .weight-dot {
+    width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--text-primary);
+    background: #fff; padding: 0; cursor: pointer; position: relative; z-index: 1; flex-shrink: 0;
+  }
+  .weight-dot.active { background: var(--text-primary); }
+  .weight-dot.locked { opacity: 0.5; }
+  .weight-labels { display: flex; align-items: center; justify-content: space-between; font-size: 10px; text-align: center; }
+  .weight-labels span { width: 40px; color: var(--text-alpha-tertiary); font-weight: 500; }
+  .weight-labels span.active { color: var(--text-primary); font-weight: 700; }
+
+  .format-section { padding: 15px 16px; display: flex; align-items: center; }
+  .format-toggle { display: flex; border: 1px solid var(--toggle-active-bg); border-radius: 8px; overflow: hidden; }
+  .format-opt {
+    border: none; background: transparent; cursor: pointer; padding: 4px 8px;
+    font-family: "Roboto Mono", monospace; font-weight: 500; font-size: 12px; color: var(--text-primary);
+  }
+  .format-opt.active { background: var(--toggle-active-bg); color: var(--text-invert); }
+
+  .colour-section { padding: 15px 16px; display: flex; align-items: center; }
+  .colour-btn { display: flex; align-items: center; gap: 4px; border: none; background: transparent; cursor: pointer; padding: 0; position: relative; }
+  .swatch-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-alpha); }
+  .colour-btn img.chev { width: 16px; height: 16px; }
+
+  .lock-badge {
+    position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 1px solid var(--border-alpha); display: flex; align-items: center; justify-content: center;
+  }
+  .lock-badge img { width: 9px; height: 9px; }
+
+  /* ---------- Content ---------- */
+  .content { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 24px; }
+  .section-label { font-family: "Roboto Mono", monospace; font-weight: 500; font-size: 12px; color: var(--text-primary); margin: 0; }
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 24px; }
+  .icon-tile {
+    width: 40px; height: 40px; border-radius: 8px; border: none; background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 8px;
+    position: relative;
+  }
+  .icon-tile:hover { background: var(--pill-bg); }
+  .icon-tile svg { width: 100%; height: 100%; display: block; }
+  .icon-tile .lock-badge { top: 2px; right: 2px; }
+  .empty-state { color: var(--text-alpha-tertiary); font-size: 12px; padding: 24px 0; text-align: center; }
+
+  /* ---------- Popovers / overlays ---------- */
+  .popover {
+    position: absolute; background: #fff; border: 1px solid var(--border-alpha); border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12); padding: 12px; z-index: 20; min-width: 200px;
+  }
+  .popover[hidden] { display: none; }
+  .category-popover { top: 100%; right: 0; margin-top: 4px; max-height: 280px; overflow-y: auto; }
+  .category-item {
+    display: flex; align-items: center; justify-content: space-between; padding: 8px;
+    border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;
+  }
+  .category-item:hover { background: var(--pill-bg); }
+  .category-item.active { font-weight: 700; }
+  .category-item img { width: 12px; height: 12px; opacity: 0.5; }
+
+  .colour-popover { top: 100%; right: 0; margin-top: 4px; }
+  .swatch-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .swatch {
+    width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-alpha); cursor: pointer; padding: 0;
+  }
+  .swatch.active { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+  .hex-input {
+    width: 100%; border: 1px solid var(--border-alpha); border-radius: 6px; padding: 6px 8px;
+    font-family: "Roboto Mono", monospace; font-size: 12px; color: var(--text-primary); outline: none;
+  }
+
+  .paywall-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center;
+    justify-content: center; z-index: 100;
+  }
+  .paywall-overlay[hidden] { display: none; }
+  .paywall {
+    background: #fff; border-radius: 12px; padding: 24px; width: 300px; text-align: center;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .paywall h3 { margin: 0; font-family: "Inter", sans-serif; font-size: 16px; color: var(--text-primary); }
+  .paywall p { margin: 0; font-size: 12px; color: var(--text-alpha-tertiary); line-height: 1.5; }
+  .paywall-unlock, .paywall-cancel {
+    border: none; border-radius: 8px; padding: 10px; font-family: "Roboto Mono", monospace;
+    font-weight: 500; font-size: 12px; cursor: pointer;
+  }
+  .paywall-unlock { background: var(--toggle-active-bg); color: var(--text-invert); }
+  .paywall-cancel { background: transparent; color: var(--text-primary); }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); background: var(--toggle-active-bg);
+    color: var(--text-invert); padding: 8px 16px; border-radius: 8px; font-size: 12px; z-index: 200;
+  }
+  .toast[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div class="panel">
+  <header class="pheader">
+    <div class="brand">
+      <img id="logoImg" alt="Forma" />
+      <span>System Icon Set</span>
+    </div>
+    <button class="close-btn" id="closeBtn" type="button" aria-label="Close">
+      <img id="closeImg" alt="" />
+    </button>
+  </header>
+
+  <div class="row1">
+    <div class="search-wrap">
+      <img id="searchImg" alt="" />
+      <input id="searchInput" type="text" placeholder="Search icon" autocomplete="off" />
+    </div>
+    <div style="position: relative;">
+      <button class="category-btn" id="categoryBtn" type="button">
+        <span id="categoryLabel">General</span>
+        <img id="chevronImg1" alt="" />
+      </button>
+      <div class="popover category-popover" id="categoryPopover" hidden></div>
+    </div>
+  </div>
+
+  <div class="hdiv"></div>
+
+  <div class="row2">
+    <div class="weight-section">
+      <div class="weight-slider-track" id="weightTrack">
+        <button class="weight-dot" data-index="0" type="button"></button>
+        <button class="weight-dot locked" data-index="1" type="button"></button>
+        <button class="weight-dot locked" data-index="2" type="button"></button>
+        <button class="weight-dot locked" data-index="3" type="button"></button>
+      </div>
+      <div class="weight-labels" id="weightLabels">
+        <span data-weight="light">Light</span>
+        <span data-weight="medium">Medium</span>
+        <span data-weight="bold">Bold</span>
+        <span data-weight="filled">Filled</span>
+      </div>
+    </div>
+
+    <div class="vdiv"></div>
+
+    <div class="format-section">
+      <div class="format-toggle" id="formatToggle">
+        <button class="format-opt active" data-format="png" type="button">PNG</button>
+        <button class="format-opt" data-format="svg" type="button">SVG</button>
+      </div>
+    </div>
+
+    <div class="vdiv"></div>
+
+    <div class="colour-section">
+      <div style="position: relative;">
+        <button class="colour-btn" id="colourBtn" type="button">
+          <span class="swatch-dot" id="swatchDot" style="background:#000000;"></span>
+          <img class="chev" id="chevronImg2" alt="" />
+          <span class="lock-badge" id="colourLockBadge"><img id="lockImg1" alt="" /></span>
+        </button>
+        <div class="popover colour-popover" id="colourPopover" hidden>
+          <div class="swatch-row" id="swatchRow"></div>
+          <input class="hex-input" id="hexInput" type="text" placeholder="#000000" maxlength="7" spellcheck="false" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hdiv"></div>
+
+  <div class="content" id="content"></div>
+</div>
+
+<div class="paywall-overlay" id="paywallOverlay" hidden>
+  <div class="paywall">
+    <h3>Unlock full access</h3>
+    <p>The General category is free forever. Unlock every category, every weight, and full colour control with a one-time payment.</p>
+    <button class="paywall-unlock" id="paywallUnlockBtn" type="button">Unlock (one-time payment)</button>
+    <button class="paywall-cancel" id="paywallCancelBtn" type="button">Not now</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(() => {
+  "use strict";
+
+  const BASE_URL = "https://wadekarprathmesh7.github.io/forma/";
+  const FREE_CATEGORY = "general";
+  const FREE_WEIGHT_INDEX = 0; // Light
+  const FREE_COLOUR = "#000000";
+  const PRESET_SWATCHES = ["#000000", "#FFFFFF", "#9E9E9E", "#2979FF", "#00C853", "#FFD600", "#FF3D00"];
+
+  const state = {
+    paid: false,
+    category: FREE_CATEGORY,
+    weightIndex: FREE_WEIGHT_INDEX,
+    colour: FREE_COLOUR,
+    format: "png",
+    search: "",
+    CATEGORIES: [],
+    ICONS: {},
+    WEIGHTS: [],
+  };
+
+  const svgCache = new Map(); // url -> raw svg text
+  const asset = (path) => BASE_URL + path;
+
+  const els = {
+    logoImg: document.getElementById("logoImg"),
+    closeImg: document.getElementById("closeImg"),
+    closeBtn: document.getElementById("closeBtn"),
+    searchImg: document.getElementById("searchImg"),
+    searchInput: document.getElementById("searchInput"),
+    categoryBtn: document.getElementById("categoryBtn"),
+    categoryLabel: document.getElementById("categoryLabel"),
+    categoryPopover: document.getElementById("categoryPopover"),
+    chevronImg1: document.getElementById("chevronImg1"),
+    chevronImg2: document.getElementById("chevronImg2"),
+    weightTrack: document.getElementById("weightTrack"),
+    weightLabels: document.getElementById("weightLabels"),
+    formatToggle: document.getElementById("formatToggle"),
+    colourBtn: document.getElementById("colourBtn"),
+    swatchDot: document.getElementById("swatchDot"),
+    colourLockBadge: document.getElementById("colourLockBadge"),
+    lockImg1: document.getElementById("lockImg1"),
+    colourPopover: document.getElementById("colourPopover"),
+    swatchRow: document.getElementById("swatchRow"),
+    hexInput: document.getElementById("hexInput"),
+    content: document.getElementById("content"),
+    paywallOverlay: document.getElementById("paywallOverlay"),
+    paywallUnlockBtn: document.getElementById("paywallUnlockBtn"),
+    paywallCancelBtn: document.getElementById("paywallCancelBtn"),
+    toast: document.getElementById("toast"),
+  };
+
+  // ---------- Static chrome assets ----------
+  els.logoImg.src = asset("assets/logo.svg");
+  els.closeImg.src = asset("assets/close.svg");
+  els.searchImg.src = asset("assets/search.svg");
+  els.chevronImg1.src = asset("icons/arrows/medium/chevron-down-small.svg");
+  els.chevronImg2.src = asset("icons/arrows/medium/chevron-down-small.svg");
+  els.lockImg1.src = asset("icons/security/light/lock.svg");
+
+  function showToast(msg) {
+    els.toast.textContent = msg;
+    els.toast.hidden = false;
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => { els.toast.hidden = true; }, 1800);
+  }
+
+  // ---------- Payment status / paywall ----------
+  function applyPaymentStateToUI() {
+    document.querySelectorAll(".weight-dot.locked").forEach((el) => {
+      el.classList.toggle("locked", !state.paid);
+    });
+    els.colourLockBadge.hidden = state.paid;
+    renderCategoryPopover();
+  }
+
+  function openPaywall() {
+    els.paywallOverlay.hidden = false;
+  }
+  function closePaywall() {
+    els.paywallOverlay.hidden = true;
+  }
+  els.paywallCancelBtn.addEventListener("click", closePaywall);
+  els.paywallOverlay.addEventListener("click", (e) => {
+    if (e.target === els.paywallOverlay) closePaywall();
+  });
+  els.paywallUnlockBtn.addEventListener("click", () => {
+    parent.postMessage({ pluginMessage: { type: "checkout" } }, "*");
+  });
+
+  els.closeBtn.addEventListener("click", () => {
+    parent.postMessage({ pluginMessage: { type: "close" } }, "*");
+  });
+
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage;
+    if (!msg) return;
+    if (msg.type === "payment-status") {
+      state.paid = msg.status && msg.status.type === "paid";
+      applyPaymentStateToUI();
+      if (state.paid) {
+        closePaywall();
+        render();
+      }
+    } else if (msg.type === "insert-icon-done") {
+      showToast("Inserted");
+    } else if (msg.type === "error") {
+      showToast("Error: " + msg.message);
+    }
+  };
+
+  // ---------- Load icon manifest (reuses the web app's js/data.js as the
+  // single source of truth, so category/icon moves show up automatically) ----------
+  async function loadIconData() {
+    const res = await fetch(asset("js/data.js"));
+    const text = await res.text();
+    const scope = {};
+    new Function(
+      "scope",
+      text + "\nscope.CATEGORIES = CATEGORIES; scope.ICONS = ICONS; scope.WEIGHTS = WEIGHTS; scope.iconLabel = iconLabel; scope.getAllIcons = getAllIcons; scope.iconSvgPath = iconSvgPath;"
+    )(scope);
+    state.CATEGORIES = scope.CATEGORIES.filter((c) => c.slug !== "all");
+    state.ICONS = scope.ICONS;
+    state.WEIGHTS = scope.WEIGHTS;
+    state.iconLabel = scope.iconLabel;
+    state.getAllIcons = scope.getAllIcons;
+    state.iconSvgPath = scope.iconSvgPath;
+  }
+
+  function currentWeight() {
+    return state.WEIGHTS[state.weightIndex];
+  }
+
+  function iconsForCategory(categorySlug) {
+    const byWeight = state.ICONS[categorySlug] || {};
+    const weight = currentWeight();
+    return (byWeight[weight] || []).map((slug) => ({ slug }));
+  }
+
+  // ---------- Category dropdown ----------
+  function renderCategoryPopover() {
+    els.categoryPopover.innerHTML = "";
+    state.CATEGORIES.forEach((cat) => {
+      const item = document.createElement("div");
+      item.className = "category-item" + (cat.slug === state.category ? " active" : "");
+      const label = document.createElement("span");
+      label.textContent = cat.name;
+      item.appendChild(label);
+      if (cat.slug !== FREE_CATEGORY && !state.paid) {
+        const lockImg = document.createElement("img");
+        lockImg.src = asset("icons/security/light/lock.svg");
+        item.appendChild(lockImg);
+      }
+      item.addEventListener("click", () => {
+        if (cat.slug !== FREE_CATEGORY && !state.paid) {
+          els.categoryPopover.hidden = true;
+          openPaywall();
+          return;
+        }
+        state.category = cat.slug;
+        els.categoryLabel.textContent = cat.name;
+        els.categoryPopover.hidden = true;
+        clearSearch();
+        render();
+      });
+      els.categoryPopover.appendChild(item);
+    });
+  }
+  els.categoryBtn.addEventListener("click", () => {
+    els.categoryPopover.hidden = !els.categoryPopover.hidden;
+    els.colourPopover.hidden = true;
+  });
+
+  // ---------- Weight slider ----------
+  function updateWeightVisuals() {
+    els.weightTrack.querySelectorAll(".weight-dot").forEach((dot, i) => {
+      dot.classList.toggle("active", i === state.weightIndex);
+    });
+    els.weightLabels.querySelectorAll("span").forEach((span, i) => {
+      span.classList.toggle("active", i === state.weightIndex);
+    });
+  }
+  els.weightTrack.querySelectorAll(".weight-dot").forEach((dot) => {
+    dot.addEventListener("click", () => {
+      const index = Number(dot.dataset.index);
+      if (index !== FREE_WEIGHT_INDEX && !state.paid) {
+        openPaywall();
+        return;
+      }
+      state.weightIndex = index;
+      updateWeightVisuals();
+      render();
+    });
+  });
+
+  // ---------- Format toggle (free) ----------
+  els.formatToggle.querySelectorAll(".format-opt").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.format = btn.dataset.format;
+      els.formatToggle.querySelectorAll(".format-opt").forEach((b) => b.classList.toggle("active", b === btn));
+    });
+  });
+
+  // ---------- Colour swatch / popover ----------
+  function renderSwatchRow() {
+    els.swatchRow.innerHTML = "";
+    PRESET_SWATCHES.forEach((hex) => {
+      const sw = document.createElement("button");
+      sw.type = "button";
+      sw.className = "swatch" + (hex.toUpperCase() === state.colour.toUpperCase() ? " active" : "");
+      sw.style.background = hex;
+      sw.addEventListener("click", () => setColour(hex));
+      els.swatchRow.appendChild(sw);
+    });
+  }
+  function setColour(hex) {
+    state.colour = hex.toUpperCase();
+    els.swatchDot.style.background = state.colour;
+    els.hexInput.value = state.colour;
+    renderSwatchRow();
+    render();
+  }
+  els.colourBtn.addEventListener("click", () => {
+    if (!state.paid) {
+      openPaywall();
+      return;
+    }
+    els.colourPopover.hidden = !els.colourPopover.hidden;
+    els.categoryPopover.hidden = true;
+    renderSwatchRow();
+  });
+  els.hexInput.addEventListener("change", () => {
+    const val = els.hexInput.value.trim();
+    const normalized = val.startsWith("#") ? val : "#" + val;
+    if (/^#([0-9a-fA-F]{6})$/.test(normalized)) {
+      setColour(normalized);
+    } else {
+      els.hexInput.value = state.colour;
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!els.categoryBtn.parentElement.contains(e.target)) els.categoryPopover.hidden = true;
+    if (!els.colourBtn.parentElement.contains(e.target)) els.colourPopover.hidden = true;
+  });
+
+  // ---------- Search ----------
+  function clearSearch() {
+    state.search = "";
+    els.searchInput.value = "";
+  }
+  els.searchInput.addEventListener("input", () => {
+    state.search = els.searchInput.value;
+    render();
+  });
+
+  // ---------- Icon grid ----------
+  async function loadSvg(url) {
+    if (svgCache.has(url)) return svgCache.get(url);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to load " + url);
+    const text = await res.text();
+    svgCache.set(url, text);
+    return text;
+  }
+
+  function resolvedSvgMarkup(rawSvg) {
+    return rawSvg.replace(/var\(--(?:fill|stroke)-0,\s*#?[0-9a-fA-F]{3,6}\)/g, state.colour);
+  }
+
+  function svgToPngBytes(svgText, size) {
+    return new Promise((resolve, reject) => {
+      const blob = new Blob([svgText], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, size, size);
+        canvas.toBlob((pngBlob) => {
+          pngBlob.arrayBuffer().then((buf) => {
+            URL.revokeObjectURL(url);
+            resolve(new Uint8Array(buf));
+          });
+        }, "image/png");
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+  async function insertIcon(slug) {
+    const locked = state.category !== FREE_CATEGORY && !state.paid;
+    if (locked) {
+      openPaywall();
+      return;
+    }
+    const path = state.iconSvgPath(state.category, currentWeight(), slug);
+    const raw = await loadSvg(asset(path));
+    const resolved = resolvedSvgMarkup(raw);
+    if (state.format === "svg") {
+      parent.postMessage({ pluginMessage: { type: "insert-icon", svg: resolved, size: 24 } }, "*");
+    } else {
+      const bytes = await svgToPngBytes(resolved, 256);
+      parent.postMessage({ pluginMessage: { type: "insert-icon-png", bytes: Array.from(bytes), size: 24 } }, "*");
+    }
+  }
+
+  async function render() {
+    const cat = state.CATEGORIES.find((c) => c.slug === state.category);
+    let icons = iconsForCategory(state.category);
+    const q = state.search.trim().toLowerCase();
+    if (q) {
+      icons = icons.filter((ic) => state.iconLabel(ic.slug).includes(q));
+    }
+
+    els.content.innerHTML = "";
+    const label = document.createElement("p");
+    label.className = "section-label";
+    label.textContent = cat ? cat.name : "";
+    els.content.appendChild(label);
+
+    if (icons.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = q ? 'No results found for "' + state.search.trim() + '"' : "No icons here yet";
+      els.content.appendChild(empty);
+      return;
+    }
+
+    const grid = document.createElement("div");
+    grid.className = "icon-grid";
+    els.content.appendChild(grid);
+
+    const locked = state.category !== FREE_CATEGORY && !state.paid;
+
+    for (const icon of icons) {
+      const tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "icon-tile";
+      tile.title = icon.slug;
+      tile.addEventListener("click", () => insertIcon(icon.slug));
+      grid.appendChild(tile);
+
+      if (locked) {
+        const badge = document.createElement("span");
+        badge.className = "lock-badge";
+        const img = document.createElement("img");
+        img.src = asset("icons/security/light/lock.svg");
+        badge.appendChild(img);
+        tile.appendChild(badge);
+      }
+
+      const path = state.iconSvgPath(state.category, currentWeight(), icon.slug);
+      loadSvg(asset(path))
+        .then((raw) => {
+          tile.insertAdjacentHTML("afterbegin", resolvedSvgMarkup(raw));
+        })
+        .catch(() => {});
+    }
+  }
+
+  // ---------- Init ----------
+  async function init() {
+    try {
+      await loadIconData();
+    } catch (err) {
+      els.content.innerHTML = '<div class="empty-state">Could not load icon data. Make sure the site is live at ' + BASE_URL + '</div>';
+      return;
+    }
+    updateWeightVisuals();
+    renderSwatchRow();
+    renderCategoryPopover();
+    els.hexInput.value = state.colour;
+    parent.postMessage({ pluginMessage: { type: "get-payment-status" } }, "*");
+    await render();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
