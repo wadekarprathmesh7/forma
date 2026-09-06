@@ -45,7 +45,12 @@
       <section class="filter-block">
         <h3 class="filter-label">Weights</h3>
         <div class="weight-slider-wrap">
-          <div class="weight-slider-track" id="weightTrack" role="radiogroup" aria-label="Icon weight"></div>
+          <div class="weight-slider-track" id="weightTrack" role="slider" aria-label="Icon weight">
+            <svg class="weight-wedge" viewBox="0 0 232 16" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0,8 Q112,0 224,0 A8,8 0 0 1 224,16 Q112,16 0,8 Z" fill="var(--text-primary)" />
+            </svg>
+            <button type="button" class="weight-handle" id="weightHandle" tabindex="-1"></button>
+          </div>
         </div>
         <div class="weight-tick-labels" id="weightLabels"></div>
       </section>

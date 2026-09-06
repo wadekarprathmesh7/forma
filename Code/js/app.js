@@ -45,6 +45,7 @@
 
   const els = {
     weightTrack: document.getElementById("weightTrack"),
+    weightHandle: document.getElementById("weightHandle"),
     weightLabels: document.getElementById("weightLabels"),
     colourSwatches: document.getElementById("colourSwatches"),
     multiSwatch: document.getElementById("multiSwatch"),
@@ -402,26 +403,13 @@
     colour: "Colour", bw: "B&W",
   };
 
-  // The slider is rebuilt whenever the category changes, since Social uses
-  // a 2-item Colour/Black & White scheme instead of the usual 4 weights.
+  // The wedge + handle markup is static (see index.html); only the tick
+  // labels are rebuilt per category, since Social uses a 2-item Colour/
+  // Black & White scheme instead of the usual 4 weights.
   function renderWeightSlider() {
     const scheme = weightSchemeFor(state.category);
-    els.weightTrack.innerHTML = "";
     els.weightLabels.innerHTML = "";
     scheme.forEach((w, i) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "weight-dot";
-      dot.dataset.index = String(i);
-      dot.setAttribute("role", "radio");
-      dot.setAttribute("aria-label", WEIGHT_LABELS[w] || w);
-      dot.addEventListener("click", () => {
-        state.weightIndex = i;
-        updateWeightSliderVisuals();
-        render();
-      });
-      els.weightTrack.appendChild(dot);
-
       const span = document.createElement("span");
       span.dataset.weight = w;
       span.textContent = WEIGHT_LABELS[w] || w;
@@ -435,12 +423,22 @@
     updateWeightSliderVisuals();
   }
 
+  function setWeightFromRatio(x) {
+    const scheme = weightSchemeFor(state.category);
+    const idx = Math.round(x * (scheme.length - 1));
+    if (idx !== state.weightIndex) {
+      state.weightIndex = idx;
+      updateWeightSliderVisuals();
+      render();
+    }
+  }
+
   function updateWeightSliderVisuals() {
-    els.weightTrack.querySelectorAll(".weight-dot").forEach((dot, i) => {
-      const isActive = i === state.weightIndex;
-      dot.classList.toggle("active", isActive);
-      dot.setAttribute("aria-checked", String(isActive));
-    });
+    const scheme = weightSchemeFor(state.category);
+    const percent = scheme.length > 1 ? (state.weightIndex / (scheme.length - 1)) * 100 : 0;
+    els.weightHandle.style.left = `${percent}%`;
+    els.weightTrack.setAttribute("aria-valuenow", String(state.weightIndex));
+    els.weightTrack.setAttribute("aria-valuemax", String(scheme.length - 1));
     els.weightLabels.querySelectorAll("span").forEach((span, i) => {
       span.classList.toggle("active", i === state.weightIndex);
     });
@@ -792,6 +790,8 @@
       el.addEventListener("pointerup", onPointerUp);
     });
   }
+
+  dragHandler(els.weightTrack, ({ x }) => setWeightFromRatio(x));
 
   dragHandler(els.pickerSv, ({ x, y }) => {
     pickerHsv.s = x * 100;

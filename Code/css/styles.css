@@ -221,46 +221,43 @@ img { display: block; max-width: 100%; }
   width: 100%;
 }
 
-/* ---------- Weight slider (matches the Figma plugin's) ---------- */
+/* ---------- Weight slider (tapered wedge, per Figma) ---------- */
+/* The track is a single wedge shape, a hairline at the Light end
+   thickening to a solid bar at the Filled end -- a visual metaphor for
+   weight -- with one round handle riding along it to the active stop. */
 
-.weight-slider-wrap { padding: 16px 0 0; }
+.weight-slider-wrap { padding: 16px 8px 0; }
 
 .weight-slider-track {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  height: 8px;
+  height: 16px;
+  width: 100%;
+  cursor: pointer;
+  touch-action: none;
 }
 
-.weight-slider-track::before {
-  content: "";
+.weight-wedge {
   position: absolute;
-  left: 16px;
-  right: 16px;
-  top: 50%;
-  height: 1px;
-  background: var(--border-primary);
-  transform: translateY(-50%);
+  inset: 0;
+  width: 100%;
+  height: 16px;
+  display: block;
+  pointer-events: none;
 }
 
-.weight-dot {
-  position: relative;
-  z-index: 1;
-  flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 1px solid var(--text-primary);
+.weight-handle {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   background: #fff;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.weight-dot.active {
-  background: var(--text-primary);
+  border: 1.5px solid var(--text-primary);
+  padding: 0;
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .weight-tick-labels {

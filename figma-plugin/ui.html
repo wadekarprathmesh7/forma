@@ -83,16 +83,15 @@
   .row2 { display: flex; align-items: stretch; flex-shrink: 0; }
 
   .weight-section { flex: 1; min-width: 0; padding: 15px 16px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
-  .weight-slider-track { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 8px; }
-  .weight-slider-track::before {
-    content: ""; position: absolute; left: 16px; right: 16px; top: 50%; height: 1px;
-    background: var(--border-alpha); transform: translateY(-50%);
+  /* Tapered wedge track: a hairline at Light thickening to a solid bar at
+     Filled, with one round handle riding along it to the active stop. */
+  .weight-slider-track { position: relative; height: 12px; margin: 0 8px; cursor: pointer; touch-action: none; }
+  .weight-wedge { position: absolute; inset: 0; width: 100%; height: 12px; display: block; pointer-events: none; }
+  .weight-handle {
+    position: absolute; top: 50%; left: 0%; width: 12px; height: 12px; transform: translate(-50%, -50%);
+    border-radius: 50%; background: #fff; border: 1.5px solid var(--text-primary); padding: 0;
+    cursor: grab; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   }
-  .weight-dot {
-    width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--text-primary);
-    background: #fff; padding: 0; cursor: pointer; position: relative; z-index: 1; flex-shrink: 0;
-  }
-  .weight-dot.active { background: var(--text-primary); }
   .weight-labels { display: flex; align-items: center; justify-content: space-between; font-size: 10px; text-align: center; }
   .weight-labels span { width: 40px; color: var(--text-alpha-tertiary); font-weight: 500; cursor: pointer; }
   .weight-labels span.active { color: var(--text-primary); font-weight: 700; }
@@ -225,7 +224,12 @@
 
   <div class="row2">
     <div class="weight-section">
-      <div class="weight-slider-track" id="weightTrack"></div>
+      <div class="weight-slider-track" id="weightTrack">
+        <svg class="weight-wedge" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,6 Q96,0 194,0 A6,6 0 0 1 194,12 Q96,12 0,6 Z" fill="var(--text-primary)" />
+        </svg>
+        <button type="button" class="weight-handle" id="weightHandle" tabindex="-1"></button>
+      </div>
       <div class="weight-labels" id="weightLabels"></div>
     </div>
 
@@ -309,6 +313,7 @@
     chevronImg1: document.getElementById("chevronImg1"),
     chevronImg2: document.getElementById("chevronImg2"),
     weightTrack: document.getElementById("weightTrack"),
+    weightHandle: document.getElementById("weightHandle"),
     weightLabels: document.getElementById("weightLabels"),
     formatToggle: document.getElementById("formatToggle"),
     colourSection: document.getElementById("colourSection"),
@@ -484,20 +489,13 @@
     render();
   }
 
-  // Rebuilt whenever the category changes: Social uses a 2-item
-  // Colour/Black & White scheme instead of the usual 4 weights.
+  // The wedge + handle markup is static (see above); only the tick labels
+  // are rebuilt per category, since Social uses a 2-item Colour/Black &
+  // White scheme instead of the usual 4 weights.
   function renderWeightSlider() {
     const scheme = state.weightSchemeFor(state.category);
-    els.weightTrack.innerHTML = "";
     els.weightLabels.innerHTML = "";
     scheme.forEach((w, i) => {
-      const dot = document.createElement("button");
-      dot.className = "weight-dot";
-      dot.type = "button";
-      dot.dataset.index = String(i);
-      dot.addEventListener("click", () => setWeight(i));
-      els.weightTrack.appendChild(dot);
-
       const span = document.createElement("span");
       span.dataset.weight = w;
       span.textContent = WEIGHT_LABELS[w] || w;
@@ -508,13 +506,37 @@
   }
 
   function updateWeightVisuals() {
-    els.weightTrack.querySelectorAll(".weight-dot").forEach((dot, i) => {
-      dot.classList.toggle("active", i === state.weightIndex);
-    });
+    const scheme = state.weightSchemeFor(state.category);
+    const percent = scheme.length > 1 ? (state.weightIndex / (scheme.length - 1)) * 100 : 0;
+    els.weightHandle.style.left = percent + "%";
     els.weightLabels.querySelectorAll("span").forEach((span, i) => {
       span.classList.toggle("active", i === state.weightIndex);
     });
   }
+
+  // Click-to-jump and drag-to-slide along the wedge track.
+  (function setupWeightDrag() {
+    function ratioFromEvent(e) {
+      const rect = els.weightTrack.getBoundingClientRect();
+      return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    }
+    function moveTo(ratio) {
+      const scheme = state.weightSchemeFor(state.category);
+      setWeight(Math.round(ratio * (scheme.length - 1)));
+    }
+    els.weightTrack.addEventListener("pointerdown", (e) => {
+      moveTo(ratioFromEvent(e));
+      try { els.weightTrack.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+      const onMove = (ev) => moveTo(ratioFromEvent(ev));
+      const onUp = (ev) => {
+        try { els.weightTrack.releasePointerCapture(ev.pointerId); } catch { /* ignore */ }
+        els.weightTrack.removeEventListener("pointermove", onMove);
+        els.weightTrack.removeEventListener("pointerup", onUp);
+      };
+      els.weightTrack.addEventListener("pointermove", onMove);
+      els.weightTrack.addEventListener("pointerup", onUp);
+    });
+  })();
 
   // Social icons are fixed brand colours, so the whole colour control is
   // disabled while that category is active.
