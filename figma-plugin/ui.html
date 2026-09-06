@@ -119,10 +119,12 @@
   /* ---------- Content ---------- */
   .content { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 24px; }
   .section-label { font-family: "Roboto Mono", monospace; font-weight: 500; font-size: 12px; color: var(--text-primary); margin: 0; }
-  .icon-grid { display: flex; flex-wrap: wrap; gap: 24px; }
+  /* Icon grid scaled up 30% from the design's 40px tiles (40 -> 52px,
+     padding/radius/gap scaled the same 1.3x to keep proportions). */
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 31.2px; }
   .icon-tile {
-    width: 40px; height: 40px; border-radius: 8px; border: none; background: transparent;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 8px;
+    width: 52px; height: 52px; border-radius: 10.4px; border: none; background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 10.4px;
     position: relative;
   }
   .icon-tile:hover { background: var(--pill-bg); }
@@ -230,8 +232,8 @@
 
     <div class="format-section">
       <div class="format-toggle" id="formatToggle">
-        <button class="format-opt active" data-format="png" type="button">PNG</button>
-        <button class="format-opt" data-format="svg" type="button">SVG</button>
+        <button class="format-opt active" data-format="svg" type="button">SVG</button>
+        <button class="format-opt" data-format="png" type="button">PNG</button>
       </div>
     </div>
 
@@ -285,7 +287,7 @@
     category: FREE_CATEGORY,
     weightIndex: DEFAULT_WEIGHT_INDEX,
     colour: DEFAULT_COLOUR,
-    format: "png",
+    format: "svg",
     search: "",
     CATEGORIES: [],
     ICONS: {},
