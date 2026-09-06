@@ -45,8 +45,6 @@
 
   const els = {
     weightTrack: document.getElementById("weightTrack"),
-    weightHandle: document.getElementById("weightHandle"),
-    weightLabels: document.getElementById("weightLabels"),
     colourSwatches: document.getElementById("colourSwatches"),
     multiSwatch: document.getElementById("multiSwatch"),
     hexInput: document.getElementById("hexInput"),
@@ -403,44 +401,50 @@
     colour: "Colour", bw: "B&W",
   };
 
-  // The wedge + handle markup is static (see index.html); only the tick
-  // labels are rebuilt per category, since Social uses a 2-item Colour/
-  // Black & White scheme instead of the usual 4 weights.
+  // Each stop is a button showing a real icon rendered in that weight, so
+  // the difference between weights is genuinely visible rather than
+  // implied by an abstract track. Social's Colour/B&W scheme previews a
+  // brand icon instead, since it has no "home" icon of its own.
+  const WEIGHT_PREVIEW_ICON = { category: "general", slug: "home" };
+  const SOCIAL_PREVIEW_ICON = { category: "social", slug: "facebook" };
+
   function renderWeightSlider() {
     const scheme = weightSchemeFor(state.category);
-    els.weightLabels.innerHTML = "";
+    const preview = state.category === SOCIAL_CATEGORY_SLUG ? SOCIAL_PREVIEW_ICON : WEIGHT_PREVIEW_ICON;
+    els.weightTrack.innerHTML = "";
     scheme.forEach((w, i) => {
-      const span = document.createElement("span");
-      span.dataset.weight = w;
-      span.textContent = WEIGHT_LABELS[w] || w;
-      span.addEventListener("click", () => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "weight-option";
+      btn.setAttribute("role", "radio");
+      btn.setAttribute("aria-label", WEIGHT_LABELS[w] || w);
+      btn.addEventListener("click", () => {
         state.weightIndex = i;
         updateWeightSliderVisuals();
         render();
       });
-      els.weightLabels.appendChild(span);
+
+      const iconWrap = document.createElement("span");
+      iconWrap.className = "weight-option-icon";
+      loadSvg(iconSvgPath(preview.category, w, preview.slug))
+        .then((svg) => { iconWrap.innerHTML = svg; })
+        .catch(() => {});
+
+      const label = document.createElement("span");
+      label.className = "weight-option-label";
+      label.textContent = WEIGHT_LABELS[w] || w;
+
+      btn.append(iconWrap, label);
+      els.weightTrack.appendChild(btn);
     });
     updateWeightSliderVisuals();
   }
 
-  function setWeightFromRatio(x) {
-    const scheme = weightSchemeFor(state.category);
-    const idx = Math.round(x * (scheme.length - 1));
-    if (idx !== state.weightIndex) {
-      state.weightIndex = idx;
-      updateWeightSliderVisuals();
-      render();
-    }
-  }
-
   function updateWeightSliderVisuals() {
-    const scheme = weightSchemeFor(state.category);
-    const percent = scheme.length > 1 ? (state.weightIndex / (scheme.length - 1)) * 100 : 0;
-    els.weightHandle.style.left = `${percent}%`;
-    els.weightTrack.setAttribute("aria-valuenow", String(state.weightIndex));
-    els.weightTrack.setAttribute("aria-valuemax", String(scheme.length - 1));
-    els.weightLabels.querySelectorAll("span").forEach((span, i) => {
-      span.classList.toggle("active", i === state.weightIndex);
+    els.weightTrack.querySelectorAll(".weight-option").forEach((btn, i) => {
+      const isActive = i === state.weightIndex;
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-checked", String(isActive));
     });
   }
 
@@ -790,8 +794,6 @@
       el.addEventListener("pointerup", onPointerUp);
     });
   }
-
-  dragHandler(els.weightTrack, ({ x }) => setWeightFromRatio(x));
 
   dragHandler(els.pickerSv, ({ x, y }) => {
     pickerHsv.s = x * 100;

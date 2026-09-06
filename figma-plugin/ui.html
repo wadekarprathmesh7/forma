@@ -82,19 +82,21 @@
   /* ---------- Toolbar row 2: weight | format | colour ---------- */
   .row2 { display: flex; align-items: stretch; flex-shrink: 0; }
 
-  .weight-section { flex: 1; min-width: 0; padding: 15px 16px; display: flex; flex-direction: column; gap: 8px; justify-content: center; }
-  /* Tapered wedge track: a hairline at Light thickening to a solid bar at
-     Filled, with one round handle riding along it to the active stop. */
-  .weight-slider-track { position: relative; height: 12px; margin: 0 8px; cursor: pointer; touch-action: none; }
-  .weight-wedge { position: absolute; inset: 0; width: 100%; height: 12px; display: block; pointer-events: none; }
-  .weight-handle {
-    position: absolute; top: 50%; left: 0%; width: 12px; height: 12px; transform: translate(-50%, -50%);
-    border-radius: 50%; background: #fff; border: 1.5px solid var(--text-primary); padding: 0;
-    cursor: grab; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  .weight-section { flex: 1; min-width: 0; padding: 8px 16px; display: flex; align-items: center; }
+  /* Segmented preview buttons: each stop shows a real icon rendered in
+     that weight, so the difference is genuinely visible. */
+  .weight-slider-track { display: flex; gap: 4px; width: 100%; }
+  .weight-option {
+    flex: 1 0 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; padding: 4px 0; border-radius: 6px; border: none; background: transparent; cursor: pointer;
   }
-  .weight-labels { display: flex; align-items: center; justify-content: space-between; font-size: 10px; text-align: center; }
-  .weight-labels span { width: 40px; color: var(--text-alpha-tertiary); font-weight: 500; cursor: pointer; }
-  .weight-labels span.active { color: var(--text-primary); font-weight: 700; }
+  .weight-option.active { background: var(--pill-bg); }
+  .weight-option-icon { width: 18px; height: 18px; flex-shrink: 0; }
+  .weight-option-icon svg { width: 100%; height: 100%; display: block; }
+  .weight-option-label {
+    font-family: "Inter", sans-serif; font-weight: 700; font-size: 8px; color: var(--text-primary);
+    text-align: center; white-space: nowrap;
+  }
 
   .format-section { padding: 15px 16px; display: flex; align-items: center; }
   .format-toggle { display: flex; border: 1px solid var(--toggle-active-bg); border-radius: 8px; overflow: hidden; }
@@ -224,13 +226,7 @@
 
   <div class="row2">
     <div class="weight-section">
-      <div class="weight-slider-track" id="weightTrack">
-        <svg class="weight-wedge" viewBox="0 0 200 12" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,6 Q96,0 194,0 A6,6 0 0 1 194,12 Q96,12 0,6 Z" fill="var(--text-primary)" />
-        </svg>
-        <button type="button" class="weight-handle" id="weightHandle" tabindex="-1"></button>
-      </div>
-      <div class="weight-labels" id="weightLabels"></div>
+      <div class="weight-slider-track" id="weightTrack"></div>
     </div>
 
     <div class="vdiv"></div>
@@ -313,8 +309,6 @@
     chevronImg1: document.getElementById("chevronImg1"),
     chevronImg2: document.getElementById("chevronImg2"),
     weightTrack: document.getElementById("weightTrack"),
-    weightHandle: document.getElementById("weightHandle"),
-    weightLabels: document.getElementById("weightLabels"),
     formatToggle: document.getElementById("formatToggle"),
     colourSection: document.getElementById("colourSection"),
     colourBtn: document.getElementById("colourBtn"),
@@ -482,61 +476,51 @@
   };
 
   // Browsing every weight is free; only inserting a non-General icon is
-  // gated (see insertIcon). Both the dot and its text label switch weight.
+  // gated (see insertIcon).
   function setWeight(index) {
     state.weightIndex = index;
     updateWeightVisuals();
     render();
   }
 
-  // The wedge + handle markup is static (see above); only the tick labels
-  // are rebuilt per category, since Social uses a 2-item Colour/Black &
-  // White scheme instead of the usual 4 weights.
+  // Each stop is a button showing a real icon rendered in that weight, so
+  // the difference between weights is genuinely visible. Social's Colour/
+  // B&W scheme previews a brand icon instead, since it has no "home" icon
+  // of its own.
+  const WEIGHT_PREVIEW_ICON = { category: "general", slug: "home" };
+  const SOCIAL_PREVIEW_ICON = { category: "social", slug: "facebook" };
+
   function renderWeightSlider() {
     const scheme = state.weightSchemeFor(state.category);
-    els.weightLabels.innerHTML = "";
+    const preview = state.category === "social" ? SOCIAL_PREVIEW_ICON : WEIGHT_PREVIEW_ICON;
+    els.weightTrack.innerHTML = "";
     scheme.forEach((w, i) => {
-      const span = document.createElement("span");
-      span.dataset.weight = w;
-      span.textContent = WEIGHT_LABELS[w] || w;
-      span.addEventListener("click", () => setWeight(i));
-      els.weightLabels.appendChild(span);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "weight-option";
+      btn.addEventListener("click", () => setWeight(i));
+
+      const iconWrap = document.createElement("span");
+      iconWrap.className = "weight-option-icon";
+      loadSvg(asset(state.iconSvgPath(preview.category, w, preview.slug)))
+        .then((svg) => { iconWrap.innerHTML = svg; })
+        .catch(() => {});
+
+      const label = document.createElement("span");
+      label.className = "weight-option-label";
+      label.textContent = WEIGHT_LABELS[w] || w;
+
+      btn.append(iconWrap, label);
+      els.weightTrack.appendChild(btn);
     });
     updateWeightVisuals();
   }
 
   function updateWeightVisuals() {
-    const scheme = state.weightSchemeFor(state.category);
-    const percent = scheme.length > 1 ? (state.weightIndex / (scheme.length - 1)) * 100 : 0;
-    els.weightHandle.style.left = percent + "%";
-    els.weightLabels.querySelectorAll("span").forEach((span, i) => {
-      span.classList.toggle("active", i === state.weightIndex);
+    els.weightTrack.querySelectorAll(".weight-option").forEach((btn, i) => {
+      btn.classList.toggle("active", i === state.weightIndex);
     });
   }
-
-  // Click-to-jump and drag-to-slide along the wedge track.
-  (function setupWeightDrag() {
-    function ratioFromEvent(e) {
-      const rect = els.weightTrack.getBoundingClientRect();
-      return Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    }
-    function moveTo(ratio) {
-      const scheme = state.weightSchemeFor(state.category);
-      setWeight(Math.round(ratio * (scheme.length - 1)));
-    }
-    els.weightTrack.addEventListener("pointerdown", (e) => {
-      moveTo(ratioFromEvent(e));
-      try { els.weightTrack.setPointerCapture(e.pointerId); } catch { /* ignore */ }
-      const onMove = (ev) => moveTo(ratioFromEvent(ev));
-      const onUp = (ev) => {
-        try { els.weightTrack.releasePointerCapture(ev.pointerId); } catch { /* ignore */ }
-        els.weightTrack.removeEventListener("pointermove", onMove);
-        els.weightTrack.removeEventListener("pointerup", onUp);
-      };
-      els.weightTrack.addEventListener("pointermove", onMove);
-      els.weightTrack.addEventListener("pointerup", onUp);
-    });
-  })();
 
   // Social icons are fixed brand colours, so the whole colour control is
   // disabled while that category is active.

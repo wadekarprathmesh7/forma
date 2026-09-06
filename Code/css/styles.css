@@ -221,64 +221,45 @@ img { display: block; max-width: 100%; }
   width: 100%;
 }
 
-/* ---------- Weight slider (tapered wedge, per Figma) ---------- */
-/* The track is a single wedge shape, a hairline at the Light end
-   thickening to a solid bar at the Filled end -- a visual metaphor for
-   weight -- with one round handle riding along it to the active stop. */
-
-.weight-slider-wrap { padding: 16px 8px 0; }
+/* ---------- Weight slider (segmented preview buttons, per Figma) ---------- */
+/* Each stop is its own button showing a real icon rendered in that
+   weight (a fixed "home" icon, or a brand icon for Social's Colour/B&W
+   scheme), so the weight difference is genuinely visible, not implied. */
 
 .weight-slider-track {
-  position: relative;
-  height: 16px;
-  width: 100%;
-  cursor: pointer;
-  touch-action: none;
-}
-
-.weight-wedge {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 16px;
-  display: block;
-  pointer-events: none;
-}
-
-.weight-handle {
-  position: absolute;
-  top: 50%;
-  left: 0%;
-  width: 16px;
-  height: 16px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: #fff;
-  border: 1.5px solid var(--text-primary);
-  padding: 0;
-  cursor: grab;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-.weight-tick-labels {
   display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
+  gap: 8px;
+  width: 100%;
 }
 
-.weight-tick-labels span {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 10px;
-  color: var(--border-tertiary);
-  width: 48px;
-  text-align: center;
+.weight-option {
+  flex: 1 0 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 0;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
   cursor: pointer;
 }
 
-.weight-tick-labels span:first-child { text-align: left; }
-.weight-tick-labels span:last-child { text-align: right; }
-.weight-tick-labels span.active { color: var(--text-primary); font-weight: 700; }
+.weight-option.active { background: #eee; }
+
+.weight-option-icon { width: 24px; height: 24px; flex-shrink: 0; }
+.weight-option-icon svg { width: 100%; height: 100%; display: block; }
+
+.weight-option-label {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--text-primary);
+  text-align: center;
+  white-space: nowrap;
+}
 
 /* ---------- Colour swatches ---------- */
 
