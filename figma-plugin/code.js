@@ -23,12 +23,13 @@ function placeAndSelect(node) {
 
 async function insertIconSvg(svg, sizePx) {
   const node = figma.createNodeFromSvg(svg);
+  // ui.html always sends 24 here regardless of how big the icon grid tiles
+  // render on screen, that's just a UI display size, unrelated to paste
+  // size. Resize unconditionally (not just when it looks off) so every
+  // pasted icon is exactly 24x24 no matter what size Figma happened to
+  // parse the SVG at.
   const size = Number(sizePx) || 24;
-  // Icons are authored on a 24x24 grid; scale the whole frame uniformly so
-  // strokes/paths stay proportional rather than distorting non-uniformly.
-  if (size !== node.width || size !== node.height) {
-    node.resize(size, size);
-  }
+  node.resize(size, size);
   placeAndSelect(node);
 }
 

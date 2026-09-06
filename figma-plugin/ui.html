@@ -121,7 +121,11 @@
   .section-label { font-family: "Roboto Mono", monospace; font-weight: 500; font-size: 12px; color: var(--text-primary); margin: 0; }
   /* Icon grid scaled up 30% from the design's 40px tiles (40 -> 52px,
      padding/radius/gap scaled the same 1.3x to keep proportions). */
-  .icon-grid { display: flex; flex-wrap: wrap; gap: 31.2px; }
+  /* Panel is 400px wide (figma.showUI), content has 16px padding each
+     side -> 368px available. 5 tiles at 52px leaves 108px for 4 gaps,
+     27px each; 26px leaves a hair of rounding margin so a 5th tile
+     never accidentally wraps to a new row. */
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 26px; }
   .icon-tile {
     width: 52px; height: 52px; border-radius: 10.4px; border: none; background: transparent;
     cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 10.4px;
