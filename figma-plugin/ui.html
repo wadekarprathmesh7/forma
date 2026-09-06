@@ -387,7 +387,12 @@
   // ---------- Load icon manifest (reuses the web app's js/data.js as the
   // single source of truth, so category/icon moves show up automatically) ----------
   async function loadIconData() {
-    const res = await fetch(asset("js/data.js"));
+    // This is the manifest that drives the whole panel (categories, icon
+    // lists, weight schemes) -- it must never be served from a stale HTTP
+    // cache. "no-store" forces a real network hit every time the plugin
+    // opens, bypassing both this webview's own cache and any cached
+    // Response that "cache: reload" would still accept if fresh-looking.
+    const res = await fetch(asset("js/data.js"), { cache: "no-store" });
     const text = await res.text();
     const scope = {};
     new Function(
