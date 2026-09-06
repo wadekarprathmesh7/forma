@@ -77,7 +77,10 @@
 
   /* ---------- Dividers ---------- */
   .hdiv { height: 1px; width: 100%; background: var(--border-alpha); flex-shrink: 0; }
-  .vdiv { width: 1px; height: 56px; background: var(--border-alpha); flex-shrink: 0; }
+  /* No fixed height: row2 uses align-items: stretch, so this always
+     matches its siblings' actual height instead of a stale hardcoded
+     value falling short (or overshooting) when they resize. */
+  .vdiv { width: 1px; background: var(--border-alpha); flex-shrink: 0; }
 
   /* ---------- Toolbar row 2: weight | format | colour ---------- */
   .row2 { display: flex; align-items: stretch; flex-shrink: 0; }
