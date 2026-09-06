@@ -279,6 +279,7 @@
   // category other than this one onto the canvas (see insertIcon).
   // Browsing every category/weight/colour is unrestricted for everyone.
   const FREE_CATEGORY = "general";
+  const ALL_CATEGORY = "all";
   const DEFAULT_WEIGHT_INDEX = 0; // Light
   const DEFAULT_COLOUR = "#000000";
   const PRESET_SWATCHES = ["#000000", "#FFFFFF", "#9E9E9E", "#2979FF", "#00C853", "#FFD600", "#FF3D00"];
@@ -398,7 +399,10 @@
       "scope",
       text + "\nscope.CATEGORIES = CATEGORIES; scope.ICONS = ICONS; scope.WEIGHTS = WEIGHTS; scope.SOCIAL_WEIGHTS = SOCIAL_WEIGHTS; scope.weightSchemeFor = weightSchemeFor; scope.iconLabel = iconLabel; scope.getAllIcons = getAllIcons; scope.iconSvgPath = iconSvgPath; scope.categoryIconPath = categoryIconPath;"
     )(scope);
-    state.CATEGORIES = scope.CATEGORIES.filter((c) => c.slug !== "all");
+    // "All icons" is now a real, selectable category (drives global search
+    // -- see the search input handler below), so it's kept rather than
+    // filtered out.
+    state.CATEGORIES = scope.CATEGORIES;
     state.ICONS = scope.ICONS;
     state.WEIGHTS = scope.WEIGHTS;
     state.SOCIAL_WEIGHTS = scope.SOCIAL_WEIGHTS;
@@ -414,10 +418,21 @@
     return scheme[state.weightIndex] || scheme[0];
   }
 
+  // Each returned icon carries its real origin category (not just the
+  // selected one) since "All icons" mixes icons from every category, and
+  // both the paywall lock and the SVG file path depend on the icon's own
+  // category, not whichever one is currently selected.
   function iconsForCategory(categorySlug) {
-    const byWeight = state.ICONS[categorySlug] || {};
     const weight = currentWeight();
-    return (byWeight[weight] || []).map((slug) => ({ slug }));
+    if (categorySlug === ALL_CATEGORY) {
+      return state
+        .getAllIcons()
+        .filter((ic) => ic.weights.includes(weight))
+        .sort((a, b) => a.slug.localeCompare(b.slug))
+        .map((ic) => ({ slug: ic.slug, category: ic.category }));
+    }
+    const byWeight = state.ICONS[categorySlug] || {};
+    return (byWeight[weight] || []).map((slug) => ({ slug, category: categorySlug }));
   }
 
   // ---------- Category dropdown ----------
@@ -563,8 +578,21 @@
     state.search = "";
     els.searchInput.value = "";
   }
+  // Search is global: it looks across every category regardless of which
+  // one is selected, so as soon as there's a query the selected category
+  // switches to "All icons" to make that visible (and so per-icon lock
+  // badges reflect each result's own category, see iconsForCategory).
   els.searchInput.addEventListener("input", () => {
     state.search = els.searchInput.value;
+    if (state.search.trim() && state.category !== ALL_CATEGORY) {
+      state.category = ALL_CATEGORY;
+      state.weightIndex = 0;
+      const allCat = state.CATEGORIES.find((c) => c.slug === ALL_CATEGORY);
+      els.categoryLabel.textContent = allCat ? allCat.name : "All icons";
+      renderCategoryPopover();
+      renderWeightSlider();
+      updateColourAvailability();
+    }
     render();
   });
 
@@ -605,13 +633,15 @@
     });
   }
 
-  async function insertIcon(slug) {
-    const locked = state.category !== FREE_CATEGORY && !state.paid;
+  async function insertIcon(icon) {
+    // icon.category is the icon's own origin category, not necessarily
+    // state.category -- in the "All icons" view they can differ.
+    const locked = icon.category !== FREE_CATEGORY && !state.paid;
     if (locked) {
       openPaywall();
       return;
     }
-    const path = state.iconSvgPath(state.category, currentWeight(), slug);
+    const path = state.iconSvgPath(icon.category, currentWeight(), icon.slug);
     const raw = await loadSvg(asset(path));
     const resolved = resolvedSvgMarkup(raw);
     if (state.format === "svg") {
@@ -648,14 +678,16 @@
     grid.className = "icon-grid";
     els.content.appendChild(grid);
 
-    const locked = state.category !== FREE_CATEGORY && !state.paid;
-
     for (const icon of icons) {
+      // Locked per icon, not per view: in "All icons" every icon keeps
+      // whatever lock status its own category would give it on its own.
+      const locked = icon.category !== FREE_CATEGORY && !state.paid;
+
       const tile = document.createElement("button");
       tile.type = "button";
       tile.className = "icon-tile";
       tile.title = icon.slug;
-      tile.addEventListener("click", () => insertIcon(icon.slug));
+      tile.addEventListener("click", () => insertIcon(icon));
       grid.appendChild(tile);
 
       if (locked) {
@@ -667,7 +699,7 @@
         tile.appendChild(badge);
       }
 
-      const path = state.iconSvgPath(state.category, currentWeight(), icon.slug);
+      const path = state.iconSvgPath(icon.category, currentWeight(), icon.slug);
       loadSvg(asset(path))
         .then((raw) => {
           tile.insertAdjacentHTML("afterbegin", resolvedSvgMarkup(raw));
