@@ -394,7 +394,7 @@ img { display: block; max-width: 100%; }
   height: 14px;
   flex-shrink: 0;
   display: flex;
-  --fill-0: var(--text-secondary);
+  --fill-0: var(--text-primary); /* match the label's own colour */
 }
 .category-icon svg { width: 100%; height: 100%; display: block; }
 .category-item:has(input:checked) .category-icon { --fill-0: var(--text-invert); }
