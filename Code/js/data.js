@@ -239,5 +239,5 @@ function categoryIconPath(categorySlug) {
   const entry = CATEGORY_ICON_MAP[categorySlug];
   if (!entry) return null;
   const [sourceCategory, slug] = entry;
-  return iconSvgPath(sourceCategory, "filled", slug);
+  return iconSvgPath(sourceCategory, "medium", slug);
 }
