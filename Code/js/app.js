@@ -13,8 +13,7 @@
   // icon library, not a server-enforced download restriction.
   const FREE_CATEGORY = "general";
   const LICENSE_STORAGE_KEY = "forma_unlocked";
-  // TODO: replace with the real Gumroad product checkout URL once created.
-  const GUMROAD_CHECKOUT_URL = "https://REPLACE_ME.gumroad.com/l/forma";
+  const GUMROAD_CHECKOUT_URL = "https://3745349451615.gumroad.com/l/kqytts";
 
   let unlockedThisSession = false; // fallback when localStorage is blocked
 
