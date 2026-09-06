@@ -221,7 +221,7 @@ img { display: block; max-width: 100%; }
   width: 100%;
 }
 
-/* ---------- Weight slider ---------- */
+/* ---------- Weight slider (matches the Figma plugin's) ---------- */
 
 .weight-slider-wrap { padding: 16px 0 0; }
 
@@ -230,28 +230,37 @@ img { display: block; max-width: 100%; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  height: 16px;
-  border-radius: 16px;
-  background: rgba(0, 0, 0, 0.1);
+  padding: 0 16px;
+  height: 8px;
+}
+
+.weight-slider-track::before {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 50%;
+  height: 1px;
+  background: var(--border-primary);
+  transform: translateY(-50%);
 }
 
 .weight-dot {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
+  width: 8px;
+  height: 8px;
   padding: 0;
-  border: none;
+  border: 1px solid var(--text-primary);
   border-radius: 50%;
-  background: var(--border-tertiary);
+  background: #fff;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .weight-dot.active {
-  background: var(--accent);
+  background: var(--text-primary);
 }
 
 .weight-tick-labels {
@@ -261,17 +270,18 @@ img { display: block; max-width: 100%; }
 }
 
 .weight-tick-labels span {
-  font-family: var(--font-ui);
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-weight: 500;
   font-size: 10px;
-  color: var(--text-secondary);
+  color: var(--border-tertiary);
   width: 48px;
   text-align: center;
+  cursor: pointer;
 }
 
 .weight-tick-labels span:first-child { text-align: left; }
 .weight-tick-labels span:last-child { text-align: right; }
-.weight-tick-labels span.active { color: var(--accent); }
+.weight-tick-labels span.active { color: var(--text-primary); font-weight: 700; }
 
 /* ---------- Colour swatches ---------- */
 
