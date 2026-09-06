@@ -596,9 +596,11 @@ img { display: block; max-width: 100%; }
   justify-content: center;
   gap: 8px;
   height: 40px;
+  flex-shrink: 0;
   padding: 0 16px;
   border-radius: var(--radius-pill);
   border: none;
+  text-decoration: none;
   cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
