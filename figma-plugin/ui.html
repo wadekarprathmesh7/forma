@@ -106,6 +106,9 @@
   .format-opt.active { background: var(--toggle-active-bg); color: var(--text-invert); }
 
   .colour-section { padding: 15px 16px; display: flex; align-items: center; }
+  /* Social icons are fixed brand colours; the whole colour control is
+     disabled (dimmed + unclickable) while that category is active. */
+  .colour-section.disabled { opacity: 0.35; pointer-events: none; }
   .colour-btn { display: flex; align-items: center; gap: 4px; border: none; background: transparent; cursor: pointer; padding: 0; position: relative; }
   .swatch-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border-alpha); }
   .colour-btn img.chev { width: 16px; height: 16px; }
@@ -218,18 +221,8 @@
 
   <div class="row2">
     <div class="weight-section">
-      <div class="weight-slider-track" id="weightTrack">
-        <button class="weight-dot" data-index="0" type="button"></button>
-        <button class="weight-dot" data-index="1" type="button"></button>
-        <button class="weight-dot" data-index="2" type="button"></button>
-        <button class="weight-dot" data-index="3" type="button"></button>
-      </div>
-      <div class="weight-labels" id="weightLabels">
-        <span data-weight="light">Light</span>
-        <span data-weight="medium">Medium</span>
-        <span data-weight="bold">Bold</span>
-        <span data-weight="filled">Filled</span>
-      </div>
+      <div class="weight-slider-track" id="weightTrack"></div>
+      <div class="weight-labels" id="weightLabels"></div>
     </div>
 
     <div class="vdiv"></div>
@@ -243,7 +236,7 @@
 
     <div class="vdiv"></div>
 
-    <div class="colour-section">
+    <div class="colour-section" id="colourSection">
       <div style="position: relative;">
         <button class="colour-btn" id="colourBtn" type="button">
           <span class="swatch-dot" id="swatchDot" style="background:#000000;"></span>
@@ -313,6 +306,7 @@
     weightTrack: document.getElementById("weightTrack"),
     weightLabels: document.getElementById("weightLabels"),
     formatToggle: document.getElementById("formatToggle"),
+    colourSection: document.getElementById("colourSection"),
     colourBtn: document.getElementById("colourBtn"),
     swatchDot: document.getElementById("swatchDot"),
     colourPopover: document.getElementById("colourPopover"),
@@ -393,18 +387,21 @@
     const scope = {};
     new Function(
       "scope",
-      text + "\nscope.CATEGORIES = CATEGORIES; scope.ICONS = ICONS; scope.WEIGHTS = WEIGHTS; scope.iconLabel = iconLabel; scope.getAllIcons = getAllIcons; scope.iconSvgPath = iconSvgPath;"
+      text + "\nscope.CATEGORIES = CATEGORIES; scope.ICONS = ICONS; scope.WEIGHTS = WEIGHTS; scope.SOCIAL_WEIGHTS = SOCIAL_WEIGHTS; scope.weightSchemeFor = weightSchemeFor; scope.iconLabel = iconLabel; scope.getAllIcons = getAllIcons; scope.iconSvgPath = iconSvgPath;"
     )(scope);
     state.CATEGORIES = scope.CATEGORIES.filter((c) => c.slug !== "all");
     state.ICONS = scope.ICONS;
     state.WEIGHTS = scope.WEIGHTS;
+    state.SOCIAL_WEIGHTS = scope.SOCIAL_WEIGHTS;
+    state.weightSchemeFor = scope.weightSchemeFor;
     state.iconLabel = scope.iconLabel;
     state.getAllIcons = scope.getAllIcons;
     state.iconSvgPath = scope.iconSvgPath;
   }
 
   function currentWeight() {
-    return state.WEIGHTS[state.weightIndex];
+    const scheme = state.weightSchemeFor(state.category);
+    return scheme[state.weightIndex] || scheme[0];
   }
 
   function iconsForCategory(categorySlug) {
@@ -426,9 +423,12 @@
       item.appendChild(label);
       item.addEventListener("click", () => {
         state.category = cat.slug;
+        state.weightIndex = 0;
         els.categoryLabel.textContent = cat.name;
         els.categoryPopover.hidden = true;
         clearSearch();
+        renderWeightSlider();
+        updateColourAvailability();
         render();
       });
       els.categoryPopover.appendChild(item);
@@ -440,6 +440,42 @@
   });
 
   // ---------- Weight slider ----------
+  const WEIGHT_LABELS = {
+    light: "Light", medium: "Medium", bold: "Bold", filled: "Filled",
+    colour: "Colour", bw: "Black & White",
+  };
+
+  // Browsing every weight is free; only inserting a non-General icon is
+  // gated (see insertIcon). Both the dot and its text label switch weight.
+  function setWeight(index) {
+    state.weightIndex = index;
+    updateWeightVisuals();
+    render();
+  }
+
+  // Rebuilt whenever the category changes: Social uses a 2-item
+  // Colour/Black & White scheme instead of the usual 4 weights.
+  function renderWeightSlider() {
+    const scheme = state.weightSchemeFor(state.category);
+    els.weightTrack.innerHTML = "";
+    els.weightLabels.innerHTML = "";
+    scheme.forEach((w, i) => {
+      const dot = document.createElement("button");
+      dot.className = "weight-dot";
+      dot.type = "button";
+      dot.dataset.index = String(i);
+      dot.addEventListener("click", () => setWeight(i));
+      els.weightTrack.appendChild(dot);
+
+      const span = document.createElement("span");
+      span.dataset.weight = w;
+      span.textContent = WEIGHT_LABELS[w] || w;
+      span.addEventListener("click", () => setWeight(i));
+      els.weightLabels.appendChild(span);
+    });
+    updateWeightVisuals();
+  }
+
   function updateWeightVisuals() {
     els.weightTrack.querySelectorAll(".weight-dot").forEach((dot, i) => {
       dot.classList.toggle("active", i === state.weightIndex);
@@ -448,19 +484,14 @@
       span.classList.toggle("active", i === state.weightIndex);
     });
   }
-  // Browsing every weight is free; only inserting a non-General icon is
-  // gated (see insertIcon). Both the dot and its text label switch weight.
-  function setWeight(index) {
-    state.weightIndex = index;
-    updateWeightVisuals();
-    render();
+
+  // Social icons are fixed brand colours, so the whole colour control is
+  // disabled while that category is active.
+  function updateColourAvailability() {
+    const disabled = state.category === "social";
+    els.colourSection.classList.toggle("disabled", disabled);
+    if (disabled) els.colourPopover.hidden = true;
   }
-  els.weightTrack.querySelectorAll(".weight-dot").forEach((dot) => {
-    dot.addEventListener("click", () => setWeight(Number(dot.dataset.index)));
-  });
-  els.weightLabels.querySelectorAll("span").forEach((span, i) => {
-    span.addEventListener("click", () => setWeight(i));
-  });
 
   // ---------- Format toggle (free) ----------
   els.formatToggle.querySelectorAll(".format-opt").forEach((btn) => {
@@ -637,7 +668,8 @@
       els.content.innerHTML = '<div class="empty-state">Could not load icon data. Make sure the site is live at ' + BASE_URL + '</div>';
       return;
     }
-    updateWeightVisuals();
+    renderWeightSlider();
+    updateColourAvailability();
     renderSwatchRow();
     renderCategoryPopover();
     els.hexInput.value = state.colour;

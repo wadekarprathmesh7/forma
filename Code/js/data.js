@@ -12,6 +12,17 @@
 
 const WEIGHTS = ["light", "medium", "bold", "filled"];
 
+// The "social" category is brand marks (social platforms, apps, browsers).
+// These are fixed-colour logos, not recolorable line icons, so instead of
+// the usual 4 weights they only ever have 2 states: the real brand colour,
+// and a flat dark monochrome. See icons/social/{colour,bw}/*.svg.
+const SOCIAL_CATEGORY_SLUG = "social";
+const SOCIAL_WEIGHTS = ["colour", "bw"];
+
+function weightSchemeFor(categorySlug) {
+  return categorySlug === SOCIAL_CATEGORY_SLUG ? SOCIAL_WEIGHTS : WEIGHTS;
+}
+
 // "all" is a virtual category, not backed by an icons/all folder: it's
 // handled specially in app.js to aggregate every icon from every real
 // category below, sorted alphabetically. Keep it first so it's picked up
@@ -35,6 +46,7 @@ const CATEGORIES = [
   { slug: "media-devices", name: "Media & Devices" },
   { slug: "security", name: "Security" },
   { slug: "shapes", name: "Shapes" },
+  { slug: SOCIAL_CATEGORY_SLUG, name: "Social" },
   { slug: "sports", name: "Sports" },
   { slug: "time", name: "Time" },
   { slug: "users", name: "Users" },
@@ -133,6 +145,12 @@ const ICONS = {
     bold: ["circle", "club", "cube-01", "cube-02", "cube-03", "cube-04", "cube-outline", "diamond", "dot-01", "dot-02", "hexagon-01", "hexagon-02", "line", "octagon-01", "octagon-02", "pentagon", "spade", "square-rounded", "square", "star-01", "star-02", "star-03", "star-04", "star-05", "stars", "triangle"],
     filled: ["circle", "club", "cube-01", "cube-02", "cube-03", "cube-04", "cube-outline", "diamond", "dot-01", "dot-02", "hexagon-01", "hexagon-02", "line", "octagon-01", "octagon-02", "pentagon", "spade", "square-rounded", "square", "star-01", "star-02", "star-03", "star-04", "star-05", "stars", "triangle"],
   },
+  // Brand marks: 2 states (colour / bw) instead of the usual 4 weights,
+  // see icons/social/{colour,bw}/*.svg and weightSchemeFor() above.
+  "social": {
+    colour: ["acrobat", "adobe", "aero", "after-effects", "airbnb", "amazon", "android", "animate", "apple", "audition", "bankin", "behance", "behance-cc", "bitly", "blogger", "bridge", "buffer", "character-animator", "chrome", "codepen", "creative-cloud", "dailymotion", "dimension", "dreamweaver", "dribbble", "drive", "dropbox", "envato", "evernote", "facebook", "fancy", "feedly", "figma", "firefox", "flickr", "fonts", "foursquare", "fresco", "github", "google", "illustrator", "incopy", "indesign", "instagram", "internet-explorer", "invision", "lightroom", "lightroom-classic", "linkedin", "magneto", "media-encoder", "medium", "messenger", "opera", "paypal", "periscope", "photoshop", "photoshop-camera", "photoshop-cc", "photoshop-express", "pinterest", "pocket", "portfolio", "prelude", "premiere-pro", "premiere-rush", "principle", "producthunt", "rdio", "reddit", "rss", "safari", "scoopit", "shopify", "skype", "slack", "snapchat", "soundcloud", "spark", "spotify", "stackoverflow", "stock", "tinder", "trello", "tumblr", "twitter", "viadeo", "viber", "vimeo", "whatsapp", "windowsphone", "wordpress", "xd", "yelp", "youtube"],
+    bw: ["acrobat", "adobe", "aero", "after-effects", "airbnb", "amazon", "android", "animate", "apple", "audition", "bankin", "behance", "behance-cc", "bitly", "blogger", "bridge", "buffer", "character-animator", "chrome", "codepen", "creative-cloud", "dailymotion", "dimension", "dreamweaver", "dribbble", "drive", "dropbox", "envato", "evernote", "facebook", "fancy", "feedly", "figma", "firefox", "flickr", "fonts", "foursquare", "fresco", "github", "google", "illustrator", "incopy", "indesign", "instagram", "internet-explorer", "invision", "lightroom", "lightroom-classic", "linkedin", "magneto", "media-encoder", "medium", "messenger", "opera", "paypal", "periscope", "photoshop", "photoshop-camera", "photoshop-cc", "photoshop-express", "pinterest", "pocket", "portfolio", "prelude", "premiere-pro", "premiere-rush", "principle", "producthunt", "rdio", "reddit", "rss", "safari", "scoopit", "shopify", "skype", "slack", "snapchat", "soundcloud", "spark", "spotify", "stackoverflow", "stock", "tinder", "trello", "tumblr", "twitter", "viadeo", "viber", "vimeo", "whatsapp", "windowsphone", "wordpress", "xd", "yelp", "youtube"],
+  },
   "sports": {
     light: ["badminton-01", "badminton-02", "baseball", "basketball", "bicycle", "bike", "bottle", "boxing", "checkered-flag", "chess-bishop", "chess-king", "chess-knight", "chess-pawn", "chess-queen", "chess-rook", "chess", "club", "cricket", "cycling", "football", "golf-course", "golf", "gym", "hiking", "hockey", "ice-skating", "net-01", "net-02", "padel", "pickleball", "playing-cards", "roller-skating", "rugby", "run-sprint", "sailing", "shoe", "spade", "sports", "stadium", "steps", "swimming-pool", "table-tennis", "tennis", "walk", "weight", "yoga"],
     medium: ["badminton-01", "badminton-02", "baseball", "basketball", "bicycle", "bike", "bottle", "boxing", "checkered-flag", "chess-bishop", "chess-king", "chess-knight", "chess-pawn", "chess-queen", "chess-rook", "chess", "club", "cricket", "cycling", "football", "golf-course", "golf", "gym", "hiking", "hockey", "ice-skating", "net-01", "net-02", "padel", "pickleball", "playing-cards", "roller-skating", "rugby", "run-sprint", "sailing", "shoe", "spade", "sports", "stadium", "steps", "swimming-pool", "table-tennis", "tennis", "walk", "weight", "yoga"],
@@ -167,15 +185,16 @@ function getAllIcons() {
   const out = [];
   for (const category of CATEGORIES) {
     const byWeight = ICONS[category.slug] || {};
+    const scheme = weightSchemeFor(category.slug);
     const anyWeightSlugs = new Set();
-    for (const w of WEIGHTS) (byWeight[w] || []).forEach((s) => anyWeightSlugs.add(s));
+    for (const w of scheme) (byWeight[w] || []).forEach((s) => anyWeightSlugs.add(s));
     for (const slug of anyWeightSlugs) {
       out.push({
         slug,
         name: iconLabel(slug),
         category: category.slug,
         categoryName: category.name,
-        weights: WEIGHTS.filter((w) => (byWeight[w] || []).includes(slug)),
+        weights: scheme.filter((w) => (byWeight[w] || []).includes(slug)),
       });
     }
   }

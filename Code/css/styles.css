@@ -353,6 +353,19 @@ img { display: block; max-width: 100%; }
 .hex-field input::placeholder { color: var(--text-disabled); }
 .hex-field input:focus { border-color: var(--accent); }
 
+/* Social category icons are fixed brand colours, not recolorable. */
+.filter-block.disabled .colour-swatches,
+.filter-block.disabled .hex-field {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.filter-hint {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
 /* ---------- Category list ---------- */
 
 .category-list {
@@ -641,6 +654,8 @@ img { display: block; max-width: 100%; }
   gap: 8px;
   align-items: center;
 }
+
+.popup-meta-row[hidden] { display: none; }
 
 .popup-meta-row dt {
   color: var(--text-primary);

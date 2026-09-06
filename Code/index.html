@@ -45,24 +45,14 @@
       <section class="filter-block">
         <h3 class="filter-label">Weights</h3>
         <div class="weight-slider-wrap">
-          <div class="weight-slider-track" id="weightTrack" role="radiogroup" aria-label="Icon weight">
-            <button type="button" class="weight-dot" data-index="0" role="radio" aria-checked="true" aria-label="Light"></button>
-            <button type="button" class="weight-dot" data-index="1" role="radio" aria-checked="false" aria-label="Medium"></button>
-            <button type="button" class="weight-dot" data-index="2" role="radio" aria-checked="false" aria-label="Bold"></button>
-            <button type="button" class="weight-dot" data-index="3" role="radio" aria-checked="false" aria-label="Filled"></button>
-          </div>
+          <div class="weight-slider-track" id="weightTrack" role="radiogroup" aria-label="Icon weight"></div>
         </div>
-        <div class="weight-tick-labels" id="weightLabels">
-          <span data-weight="light" class="active">Light</span>
-          <span data-weight="medium">Medium</span>
-          <span data-weight="bold">Bold</span>
-          <span data-weight="filled">Filled</span>
-        </div>
+        <div class="weight-tick-labels" id="weightLabels"></div>
       </section>
 
       <hr class="divider" />
 
-      <section class="filter-block">
+      <section class="filter-block" id="colourFilterBlock">
         <h3 class="filter-label">Colour</h3>
         <div class="colour-swatches" id="colourSwatches">
           <button class="swatch active" type="button" data-colour="#000000" style="--sw:#000000" aria-label="Black"><span class="swatch-check"></span></button>
@@ -77,6 +67,7 @@
         <div class="hex-field">
           <input id="hexInput" type="text" placeholder="#000000" maxlength="7" spellcheck="false" />
         </div>
+        <p class="filter-hint" id="colourDisabledHint" hidden>Social icons use fixed brand colours and can't be recoloured.</p>
       </section>
 
       <hr class="divider" />
@@ -127,7 +118,7 @@
       <div class="popup-icon-preview" id="popupIconPreview"></div>
       <dl class="popup-meta">
         <div class="popup-meta-row"><dt>Weight:</dt><dd id="popupWeight">Light</dd></div>
-        <div class="popup-meta-row"><dt>Colour:</dt><dd><span class="meta-dot" id="popupColourDot"></span><span id="popupColourHex">#424242</span></dd></div>
+        <div class="popup-meta-row" id="popupColourRow"><dt>Colour:</dt><dd><span class="meta-dot" id="popupColourDot"></span><span id="popupColourHex">#424242</span></dd></div>
         <div class="popup-meta-row"><dt>Category:</dt><dd id="popupCategory">Alerts &amp; Feedback</dd></div>
       </dl>
     </div>

@@ -18,6 +18,8 @@
     multiSwatch: document.getElementById("multiSwatch"),
     hexInput: document.getElementById("hexInput"),
     categoryList: document.getElementById("categoryList"),
+    colourFilterBlock: document.getElementById("colourFilterBlock"),
+    colourDisabledHint: document.getElementById("colourDisabledHint"),
     contentTitle: document.getElementById("contentTitle"),
     iconGrid: document.getElementById("iconGrid"),
     emptyState: document.getElementById("emptyState"),
@@ -34,6 +36,7 @@
     popupIconName: document.getElementById("popupIconName"),
     popupIconPreview: document.getElementById("popupIconPreview"),
     popupWeight: document.getElementById("popupWeight"),
+    popupColourRow: document.getElementById("popupColourRow"),
     popupColourDot: document.getElementById("popupColourDot"),
     popupColourHex: document.getElementById("popupColourHex"),
     popupCategory: document.getElementById("popupCategory"),
@@ -162,7 +165,10 @@
       input.checked = cat.slug === state.category;
       input.addEventListener("change", () => {
         state.category = cat.slug;
+        state.weightIndex = 0;
         clearSearch();
+        renderWeightSlider();
+        updateColourAvailability();
         render();
         closeSidebar();
       });
@@ -186,7 +192,8 @@
   }
 
   function currentWeight() {
-    return WEIGHTS[state.weightIndex];
+    const scheme = weightSchemeFor(state.category);
+    return scheme[state.weightIndex] || scheme[0];
   }
 
   function iconsForView() {
@@ -275,13 +282,43 @@
 
   // ---------- Weight slider ----------
 
-  els.weightTrack.querySelectorAll(".weight-dot").forEach((dot) => {
-    dot.addEventListener("click", () => {
-      state.weightIndex = Number(dot.dataset.index);
-      updateWeightSliderVisuals();
-      render();
+  const WEIGHT_LABELS = {
+    light: "Light", medium: "Medium", bold: "Bold", filled: "Filled",
+    colour: "Colour", bw: "Black & White",
+  };
+
+  // The slider is rebuilt whenever the category changes, since Social uses
+  // a 2-item Colour/Black & White scheme instead of the usual 4 weights.
+  function renderWeightSlider() {
+    const scheme = weightSchemeFor(state.category);
+    els.weightTrack.innerHTML = "";
+    els.weightLabels.innerHTML = "";
+    scheme.forEach((w, i) => {
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "weight-dot";
+      dot.dataset.index = String(i);
+      dot.setAttribute("role", "radio");
+      dot.setAttribute("aria-label", WEIGHT_LABELS[w] || w);
+      dot.addEventListener("click", () => {
+        state.weightIndex = i;
+        updateWeightSliderVisuals();
+        render();
+      });
+      els.weightTrack.appendChild(dot);
+
+      const span = document.createElement("span");
+      span.dataset.weight = w;
+      span.textContent = WEIGHT_LABELS[w] || w;
+      span.addEventListener("click", () => {
+        state.weightIndex = i;
+        updateWeightSliderVisuals();
+        render();
+      });
+      els.weightLabels.appendChild(span);
     });
-  });
+    updateWeightSliderVisuals();
+  }
 
   function updateWeightSliderVisuals() {
     els.weightTrack.querySelectorAll(".weight-dot").forEach((dot, i) => {
@@ -295,6 +332,15 @@
   }
 
   // ---------- Colour swatches ----------
+
+  // Social icons are fixed brand colours, so the whole colour picker is
+  // disabled while that category is active.
+  function updateColourAvailability() {
+    const disabled = state.category === SOCIAL_CATEGORY_SLUG;
+    els.colourFilterBlock.classList.toggle("disabled", disabled);
+    els.hexInput.disabled = disabled;
+    els.colourDisabledHint.hidden = !disabled;
+  }
 
   els.colourSwatches.querySelectorAll(".swatch:not(.swatch-multi)").forEach((sw) => {
     sw.addEventListener("click", () => setActiveColour(sw.dataset.colour));
@@ -327,7 +373,7 @@
   async function openDownloadPopup(icon, weight) {
     currentPopupIcon = { ...icon, weight };
     els.popupIconName.textContent = icon.slug;
-    els.popupWeight.textContent = weight.charAt(0).toUpperCase() + weight.slice(1);
+    els.popupWeight.textContent = WEIGHT_LABELS[weight] || (weight.charAt(0).toUpperCase() + weight.slice(1));
     els.popupCategory.textContent = icon.categoryName;
     await renderPopupPreview();
     els.downloadOverlay.hidden = false;
@@ -335,8 +381,14 @@
 
   async function renderPopupPreview() {
     if (!currentPopupIcon) return;
-    els.popupColourHex.textContent = state.colour;
-    els.popupColourDot.style.background = state.colour;
+    // Social icons carry their own fixed brand colour; the "Colour:" meta
+    // row (driven by the global colour picker) doesn't apply to them.
+    const isSocial = currentPopupIcon.category === SOCIAL_CATEGORY_SLUG;
+    els.popupColourRow.hidden = isSocial;
+    if (!isSocial) {
+      els.popupColourHex.textContent = state.colour;
+      els.popupColourDot.style.background = state.colour;
+    }
     const path = iconSvgPath(currentPopupIcon.category, currentPopupIcon.weight, currentPopupIcon.slug);
     try {
       const svg = await loadSvg(path);
@@ -657,10 +709,12 @@
     const iconSlug = params.get("icon");
 
     if (cat && CATEGORIES.some((c) => c.slug === cat)) state.category = cat;
-    if (weight && WEIGHTS.includes(weight)) state.weightIndex = WEIGHTS.indexOf(weight);
+    const scheme = weightSchemeFor(state.category);
+    if (weight && scheme.includes(weight)) state.weightIndex = scheme.indexOf(weight);
     if (colour && hexToRgb(colour)) setActiveColour(colour.startsWith("#") ? colour : `#${colour}`);
 
-    updateWeightSliderVisuals();
+    renderWeightSlider();
+    updateColourAvailability();
 
     return iconSlug;
   }
@@ -669,7 +723,6 @@
 
   async function init() {
     renderCategoryList();
-    updateWeightSliderVisuals();
     const deepLinkIcon = applyDeepLink();
     setActiveColour(state.colour);
     await render();
