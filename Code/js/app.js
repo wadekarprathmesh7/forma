@@ -172,10 +172,17 @@
         render();
         closeSidebar();
       });
+      const iconWrap = document.createElement("span");
+      iconWrap.className = "category-icon";
+      const iconPath = categoryIconPath(cat.slug);
+      if (iconPath) {
+        loadSvg(iconPath).then((svg) => { iconWrap.innerHTML = svg; }).catch(() => {});
+      }
+
       const text = document.createElement("span");
       text.className = "label";
       text.textContent = cat.name;
-      label.append(input, text);
+      label.append(input, iconWrap, text);
       els.categoryList.appendChild(label);
     });
   }
@@ -284,7 +291,7 @@
 
   const WEIGHT_LABELS = {
     light: "Light", medium: "Medium", bold: "Bold", filled: "Filled",
-    colour: "Colour", bw: "Black & White",
+    colour: "Colour", bw: "B&W",
   };
 
   // The slider is rebuilt whenever the category changes, since Social uses

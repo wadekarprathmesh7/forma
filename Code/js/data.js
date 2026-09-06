@@ -204,3 +204,40 @@ function getAllIcons() {
 function iconSvgPath(categorySlug, weight, iconSlug) {
   return `icons/${categorySlug}/${weight}/${iconSlug}.svg`;
 }
+
+// One representative icon per category, shown as a small leading glyph in
+// category pickers (web app sidebar list, plugin category dropdown). Each
+// entry is [sourceCategorySlug, iconSlug] -- almost always the category's
+// own icon, except "all" and "social" which borrow a fitting line icon
+// from elsewhere in the library so every row stays a plain single-colour
+// glyph (Social's own icons are full-colour brand marks, wrong style here).
+const CATEGORY_ICON_MAP = {
+  [ALL_ICONS_SLUG]: ["general", "grid-menu"],
+  "alerts-feedback": ["alerts-feedback", "bell-notification-01"],
+  "arrows": ["arrows", "arrow-right"],
+  "charts": ["charts", "pie-chart-01"],
+  "communication": ["communication", "chat-01"],
+  "developments": ["developments", "terminal"],
+  "editor": ["editor", "edit-01"],
+  "education": ["education", "graduation-cap"],
+  "files": ["files", "folder"],
+  "finance-ecommerce": ["finance-ecommerce", "wallet-01"],
+  "general": ["general", "settings-01"],
+  "layouts": ["layouts", "layout-grid-01"],
+  "maps-travel": ["maps-travel", "map-01"],
+  "media-devices": ["media-devices", "monitor-01"],
+  "security": ["security", "shield"],
+  "shapes": ["shapes", "hexagon-01"],
+  [SOCIAL_CATEGORY_SLUG]: ["general", "share-01"],
+  "sports": ["sports", "sports"],
+  "time": ["time", "clock"],
+  "users": ["users", "users"],
+  "weather": ["weather", "sun"],
+};
+
+function categoryIconPath(categorySlug) {
+  const entry = CATEGORY_ICON_MAP[categorySlug];
+  if (!entry) return null;
+  const [sourceCategory, slug] = entry;
+  return iconSvgPath(sourceCategory, "light", slug);
+}

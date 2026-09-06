@@ -147,12 +147,17 @@
   .popover[hidden] { display: none; }
   .category-popover { top: 100%; right: 0; margin-top: 4px; max-height: 280px; overflow-y: auto; }
   .category-item {
-    display: flex; align-items: center; justify-content: space-between; padding: 8px;
+    display: flex; align-items: center; justify-content: flex-start; gap: 8px; padding: 8px;
     border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap;
   }
   .category-item:hover { background: var(--pill-bg); }
   .category-item.active { font-weight: 700; }
-  .category-item img { width: 12px; height: 12px; opacity: 0.5; }
+  .category-item .cat-icon {
+    width: 14px; height: 14px; flex-shrink: 0; display: flex;
+    --fill-0: var(--text-alpha-tertiary);
+  }
+  .category-item .cat-icon svg { width: 100%; height: 100%; display: block; }
+  .category-item.active .cat-icon { --fill-0: var(--text-primary); }
 
   .colour-popover { top: 100%; right: 0; margin-top: 4px; }
   .swatch-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
@@ -387,7 +392,7 @@
     const scope = {};
     new Function(
       "scope",
-      text + "\nscope.CATEGORIES = CATEGORIES; scope.ICONS = ICONS; scope.WEIGHTS = WEIGHTS; scope.SOCIAL_WEIGHTS = SOCIAL_WEIGHTS; scope.weightSchemeFor = weightSchemeFor; scope.iconLabel = iconLabel; scope.getAllIcons = getAllIcons; scope.iconSvgPath = iconSvgPath;"
+      text + "\nscope.CATEGORIES = CATEGORIES; scope.ICONS = ICONS; scope.WEIGHTS = WEIGHTS; scope.SOCIAL_WEIGHTS = SOCIAL_WEIGHTS; scope.weightSchemeFor = weightSchemeFor; scope.iconLabel = iconLabel; scope.getAllIcons = getAllIcons; scope.iconSvgPath = iconSvgPath; scope.categoryIconPath = categoryIconPath;"
     )(scope);
     state.CATEGORIES = scope.CATEGORIES.filter((c) => c.slug !== "all");
     state.ICONS = scope.ICONS;
@@ -397,6 +402,7 @@
     state.iconLabel = scope.iconLabel;
     state.getAllIcons = scope.getAllIcons;
     state.iconSvgPath = scope.iconSvgPath;
+    state.categoryIconPath = scope.categoryIconPath;
   }
 
   function currentWeight() {
@@ -418,9 +424,15 @@
     state.CATEGORIES.forEach((cat) => {
       const item = document.createElement("div");
       item.className = "category-item" + (cat.slug === state.category ? " active" : "");
+      const iconWrap = document.createElement("span");
+      iconWrap.className = "cat-icon";
+      const iconPath = state.categoryIconPath(cat.slug);
+      if (iconPath) {
+        loadSvg(asset(iconPath)).then((svg) => { iconWrap.innerHTML = svg; }).catch(() => {});
+      }
       const label = document.createElement("span");
       label.textContent = cat.name;
-      item.appendChild(label);
+      item.append(iconWrap, label);
       item.addEventListener("click", () => {
         state.category = cat.slug;
         state.weightIndex = 0;
@@ -442,7 +454,7 @@
   // ---------- Weight slider ----------
   const WEIGHT_LABELS = {
     light: "Light", medium: "Medium", bold: "Bold", filled: "Filled",
-    colour: "Colour", bw: "Black & White",
+    colour: "Colour", bw: "B&W",
   };
 
   // Browsing every weight is free; only inserting a non-General icon is
