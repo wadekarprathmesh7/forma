@@ -93,9 +93,8 @@
     background: #fff; padding: 0; cursor: pointer; position: relative; z-index: 1; flex-shrink: 0;
   }
   .weight-dot.active { background: var(--text-primary); }
-  .weight-dot.locked { opacity: 0.5; }
   .weight-labels { display: flex; align-items: center; justify-content: space-between; font-size: 10px; text-align: center; }
-  .weight-labels span { width: 40px; color: var(--text-alpha-tertiary); font-weight: 500; }
+  .weight-labels span { width: 40px; color: var(--text-alpha-tertiary); font-weight: 500; cursor: pointer; }
   .weight-labels span.active { color: var(--text-primary); font-weight: 700; }
 
   .format-section { padding: 15px 16px; display: flex; align-items: center; }
@@ -215,9 +214,9 @@
     <div class="weight-section">
       <div class="weight-slider-track" id="weightTrack">
         <button class="weight-dot" data-index="0" type="button"></button>
-        <button class="weight-dot locked" data-index="1" type="button"></button>
-        <button class="weight-dot locked" data-index="2" type="button"></button>
-        <button class="weight-dot locked" data-index="3" type="button"></button>
+        <button class="weight-dot" data-index="1" type="button"></button>
+        <button class="weight-dot" data-index="2" type="button"></button>
+        <button class="weight-dot" data-index="3" type="button"></button>
       </div>
       <div class="weight-labels" id="weightLabels">
         <span data-weight="light">Light</span>
@@ -243,7 +242,6 @@
         <button class="colour-btn" id="colourBtn" type="button">
           <span class="swatch-dot" id="swatchDot" style="background:#000000;"></span>
           <img class="chev" id="chevronImg2" alt="" />
-          <span class="lock-badge" id="colourLockBadge"><img id="lockImg1" alt="" /></span>
         </button>
         <div class="popover colour-popover" id="colourPopover" hidden>
           <div class="swatch-row" id="swatchRow"></div>
@@ -261,7 +259,7 @@
 <div class="paywall-overlay" id="paywallOverlay" hidden>
   <div class="paywall">
     <h3>Unlock full access</h3>
-    <p>The General category is free forever. Unlock every category, every weight, and full colour control with a one-time payment.</p>
+    <p>Browsing every category is free. Inserting icons from the General category is free forever, too. Unlock every other category to insert with a one-time payment.</p>
     <button class="paywall-unlock" id="paywallUnlockBtn" type="button">Unlock (one-time payment)</button>
     <button class="paywall-cancel" id="paywallCancelBtn" type="button">Not now</button>
   </div>
@@ -274,16 +272,19 @@
   "use strict";
 
   const BASE_URL = "https://wadekarprathmesh7.github.io/forma/";
+  // The only thing gated behind payment is inserting an icon from a
+  // category other than this one onto the canvas (see insertIcon).
+  // Browsing every category/weight/colour is unrestricted for everyone.
   const FREE_CATEGORY = "general";
-  const FREE_WEIGHT_INDEX = 0; // Light
-  const FREE_COLOUR = "#000000";
+  const DEFAULT_WEIGHT_INDEX = 0; // Light
+  const DEFAULT_COLOUR = "#000000";
   const PRESET_SWATCHES = ["#000000", "#FFFFFF", "#9E9E9E", "#2979FF", "#00C853", "#FFD600", "#FF3D00"];
 
   const state = {
     paid: false,
     category: FREE_CATEGORY,
-    weightIndex: FREE_WEIGHT_INDEX,
-    colour: FREE_COLOUR,
+    weightIndex: DEFAULT_WEIGHT_INDEX,
+    colour: DEFAULT_COLOUR,
     format: "png",
     search: "",
     CATEGORIES: [],
@@ -308,8 +309,6 @@
     formatToggle: document.getElementById("formatToggle"),
     colourBtn: document.getElementById("colourBtn"),
     swatchDot: document.getElementById("swatchDot"),
-    colourLockBadge: document.getElementById("colourLockBadge"),
-    lockImg1: document.getElementById("lockImg1"),
     colourPopover: document.getElementById("colourPopover"),
     swatchRow: document.getElementById("swatchRow"),
     hexInput: document.getElementById("hexInput"),
@@ -324,7 +323,6 @@
   els.searchImg.src = asset("assets/search.svg");
   els.chevronImg1.src = asset("icons/arrows/medium/chevron-down-small.svg");
   els.chevronImg2.src = asset("icons/arrows/medium/chevron-down-small.svg");
-  els.lockImg1.src = asset("icons/security/light/lock.svg");
 
   // Logo is loaded as inline SVG (not <img src>) so the wordmark's
   // var(--fill-0, #424242) paths can be forced white for the dark header;
@@ -344,12 +342,13 @@
   }
 
   // ---------- Payment status / paywall ----------
+  // Browsing (category, weight, colour) is unrestricted for everyone; only
+  // inserting a non-General icon onto the canvas is gated (see insertIcon
+  // and the per-tile lock badge in render()). This just needs to refresh
+  // those tile badges when payment status changes.
   function applyPaymentStateToUI() {
-    document.querySelectorAll(".weight-dot.locked").forEach((el) => {
-      el.classList.toggle("locked", !state.paid);
-    });
-    els.colourLockBadge.hidden = state.paid;
     renderCategoryPopover();
+    render();
   }
 
   function openPaywall() {
@@ -372,10 +371,7 @@
     if (msg.type === "payment-status") {
       state.paid = msg.status && msg.status.type === "paid";
       applyPaymentStateToUI();
-      if (state.paid) {
-        closePaywall();
-        render();
-      }
+      if (state.paid) closePaywall();
     } else if (msg.type === "insert-icon-done") {
       showToast("Inserted");
     } else if (msg.type === "error") {
@@ -412,6 +408,8 @@
   }
 
   // ---------- Category dropdown ----------
+  // Browsing every category is free; only inserting a non-General icon is
+  // gated (see insertIcon), so this is a plain switcher, no lock badges.
   function renderCategoryPopover() {
     els.categoryPopover.innerHTML = "";
     state.CATEGORIES.forEach((cat) => {
@@ -420,17 +418,7 @@
       const label = document.createElement("span");
       label.textContent = cat.name;
       item.appendChild(label);
-      if (cat.slug !== FREE_CATEGORY && !state.paid) {
-        const lockImg = document.createElement("img");
-        lockImg.src = asset("icons/security/light/lock.svg");
-        item.appendChild(lockImg);
-      }
       item.addEventListener("click", () => {
-        if (cat.slug !== FREE_CATEGORY && !state.paid) {
-          els.categoryPopover.hidden = true;
-          openPaywall();
-          return;
-        }
         state.category = cat.slug;
         els.categoryLabel.textContent = cat.name;
         els.categoryPopover.hidden = true;
@@ -454,17 +442,18 @@
       span.classList.toggle("active", i === state.weightIndex);
     });
   }
+  // Browsing every weight is free; only inserting a non-General icon is
+  // gated (see insertIcon). Both the dot and its text label switch weight.
+  function setWeight(index) {
+    state.weightIndex = index;
+    updateWeightVisuals();
+    render();
+  }
   els.weightTrack.querySelectorAll(".weight-dot").forEach((dot) => {
-    dot.addEventListener("click", () => {
-      const index = Number(dot.dataset.index);
-      if (index !== FREE_WEIGHT_INDEX && !state.paid) {
-        openPaywall();
-        return;
-      }
-      state.weightIndex = index;
-      updateWeightVisuals();
-      render();
-    });
+    dot.addEventListener("click", () => setWeight(Number(dot.dataset.index)));
+  });
+  els.weightLabels.querySelectorAll("span").forEach((span, i) => {
+    span.addEventListener("click", () => setWeight(i));
   });
 
   // ---------- Format toggle (free) ----------
@@ -494,11 +483,9 @@
     renderSwatchRow();
     render();
   }
+  // Colour selection is free for everyone; only inserting a non-General
+  // icon is gated (see insertIcon).
   els.colourBtn.addEventListener("click", () => {
-    if (!state.paid) {
-      openPaywall();
-      return;
-    }
     els.colourPopover.hidden = !els.colourPopover.hidden;
     els.categoryPopover.hidden = true;
     renderSwatchRow();
