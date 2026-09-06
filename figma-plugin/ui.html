@@ -665,7 +665,13 @@
     try {
       await loadIconData();
     } catch (err) {
-      els.content.innerHTML = '<div class="empty-state">Could not load icon data. Make sure the site is live at ' + BASE_URL + '</div>';
+      // Surface the real error (network vs. parse vs. eval failure) instead
+      // of a generic message, so this is diagnosable from a screenshot.
+      const detail = (err && (err.stack || err.message)) || String(err);
+      console.error("Forma: failed to load icon data", err);
+      els.content.innerHTML =
+        '<div class="empty-state">Could not load icon data from ' + BASE_URL +
+        '<br><br>' + String(detail).replace(/</g, "&lt;") + '</div>';
       return;
     }
     renderWeightSlider();
