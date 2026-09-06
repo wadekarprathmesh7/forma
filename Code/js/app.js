@@ -3,6 +3,39 @@
 
   const svgCache = new Map(); // path -> raw svg text
 
+  // ---------- Monetisation (matches the Figma plugin's model) ----------
+  // Browsing every category, search, weight, and colour is unrestricted
+  // for everyone. Downloading icons from the General category is free,
+  // forever. Downloading from any other category requires a one-time
+  // purchase, verified via a Gumroad license key against /api/verify-license
+  // (see Code/api/verify-license.js). The unlocked flag is stored in
+  // localStorage -- this is a client-side gate appropriate for a low-stakes
+  // icon library, not a server-enforced download restriction.
+  const FREE_CATEGORY = "general";
+  const LICENSE_STORAGE_KEY = "forma_unlocked";
+  // TODO: replace with the real Gumroad product checkout URL once created.
+  const GUMROAD_CHECKOUT_URL = "https://REPLACE_ME.gumroad.com/l/forma";
+
+  let unlockedThisSession = false; // fallback when localStorage is blocked
+
+  function isUnlocked() {
+    if (unlockedThisSession) return true;
+    try {
+      return localStorage.getItem(LICENSE_STORAGE_KEY) === "true";
+    } catch {
+      return false; // private browsing / storage blocked
+    }
+  }
+
+  function setUnlocked() {
+    unlockedThisSession = true;
+    try {
+      localStorage.setItem(LICENSE_STORAGE_KEY, "true");
+    } catch {
+      /* ignore -- unlock still applies for the rest of this page load */
+    }
+  }
+
   const state = {
     weightIndex: 0,
     colour: "#000000",
@@ -57,6 +90,13 @@
     dropperBtn: document.getElementById("dropperBtn"),
     colourCancelBtn: document.getElementById("colourCancelBtn"),
     colourApplyBtn: document.getElementById("colourApplyBtn"),
+
+    unlockOverlay: document.getElementById("unlockOverlay"),
+    unlockCloseBtn: document.getElementById("unlockCloseBtn"),
+    unlockBuyBtn: document.getElementById("unlockBuyBtn"),
+    licenseInput: document.getElementById("licenseInput"),
+    verifyLicenseBtn: document.getElementById("verifyLicenseBtn"),
+    unlockError: document.getElementById("unlockError"),
   };
 
   // ---------- Mobile filter sidebar ----------
@@ -76,6 +116,61 @@
   els.filterToggleBtn.addEventListener("click", openSidebar);
   els.sidebarCloseBtn.addEventListener("click", closeSidebar);
   els.sidebarOverlay.addEventListener("click", closeSidebar);
+
+  // ---------- Unlock modal ----------
+
+  els.unlockBuyBtn.href = GUMROAD_CHECKOUT_URL;
+
+  function openUnlockModal() {
+    els.unlockError.hidden = true;
+    els.unlockOverlay.hidden = false;
+  }
+
+  function closeUnlockModal() {
+    els.unlockOverlay.hidden = true;
+  }
+
+  els.unlockCloseBtn.addEventListener("click", closeUnlockModal);
+  els.unlockOverlay.addEventListener("click", (e) => {
+    if (e.target === els.unlockOverlay) closeUnlockModal();
+  });
+
+  function showUnlockError(message) {
+    els.unlockError.textContent = message;
+    els.unlockError.hidden = false;
+  }
+
+  els.verifyLicenseBtn.addEventListener("click", async () => {
+    const key = els.licenseInput.value.trim();
+    if (!key) {
+      showUnlockError("Enter your license key first.");
+      return;
+    }
+    els.verifyLicenseBtn.disabled = true;
+    els.verifyLicenseBtn.textContent = "Verifying…";
+    els.unlockError.hidden = true;
+    try {
+      const res = await fetch("/api/verify-license", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ licenseKey: key }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.valid) {
+        setUnlocked();
+        closeUnlockModal();
+        showToast("Unlocked! Thanks for your purchase.");
+        render();
+      } else {
+        showUnlockError(data.reason || "That license key doesn't look valid.");
+      }
+    } catch {
+      showUnlockError("Couldn't verify right now. Check your connection and try again.");
+    } finally {
+      els.verifyLicenseBtn.disabled = false;
+      els.verifyLicenseBtn.textContent = "Verify";
+    }
+  });
 
   // ---------- Colour helpers ----------
 
@@ -258,6 +353,20 @@
       label.textContent = icon.slug;
 
       tile.append(glyph, label);
+
+      // Appended to the tile, not the glyph: the glyph's innerHTML gets
+      // replaced wholesale once its SVG finishes loading below, which
+      // would silently wipe out a badge nested inside it.
+      if (icon.category !== FREE_CATEGORY && !isUnlocked()) {
+        const badge = document.createElement("span");
+        badge.className = "lock-badge";
+        const img = document.createElement("img");
+        img.src = "icons/security/light/lock.svg";
+        img.alt = "";
+        badge.appendChild(img);
+        tile.appendChild(badge);
+      }
+
       tile.addEventListener("click", () => selectIcon(icon, weight));
       els.iconGrid.appendChild(tile);
 
@@ -368,6 +477,13 @@
   // ---------- Icon selection + download popup ----------
 
   function selectIcon(icon, weight) {
+    // Browsing (this click just reveals the preview/download popup) is
+    // gated the same way inserting is gated in the Figma plugin: General
+    // is free forever, everything else needs the one-time unlock.
+    if (icon.category !== FREE_CATEGORY && !isUnlocked()) {
+      openUnlockModal();
+      return;
+    }
     state.selectedIconSlug = icon.slug;
     document.querySelectorAll(".icon-tile").forEach((t) => {
       t.classList.toggle("selected", t.dataset.slug === icon.slug);
