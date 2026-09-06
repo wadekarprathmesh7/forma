@@ -6,6 +6,7 @@
   "ui": "ui.html",
   "editorType": ["figma"],
   "documentAccess": "dynamic-page",
+  "permissions": ["payments"],
   "networkAccess": {
     "allowedDomains": [
       "https://wadekarprathmesh7.github.io",
