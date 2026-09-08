@@ -16,6 +16,20 @@
 // are present.
 
 module.exports = async function handler(req, res) {
+  // CORS: called from origins other than this site itself -- the web
+  // app's own page (same-origin, doesn't strictly need this) and the
+  // Figma plugin's UI iframe (a genuinely different origin, which the
+  // browser will block without these headers). No credentials are
+  // involved, so a wildcard origin is fine here.
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+
   if (req.method !== "POST") {
     res.status(405).json({ valid: false, reason: "Method not allowed." });
     return;

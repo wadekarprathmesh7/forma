@@ -6,13 +6,13 @@
   "ui": "ui.html",
   "editorType": ["figma"],
   "documentAccess": "dynamic-page",
-  "permissions": ["payments"],
   "networkAccess": {
     "allowedDomains": [
       "https://wadekarprathmesh7.github.io",
+      "https://forma-gamma-seven.vercel.app",
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com"
     ],
-    "reasoning": "Fetches icon SVGs and the icon manifest from the Forma System Icon Set site hosted on GitHub Pages (so the plugin package stays small and icons update without republishing), plus the Inter/Roboto Mono webfonts used by the UI."
+    "reasoning": "Fetches icon SVGs and the icon manifest from the Forma System Icon Set site hosted on GitHub Pages (so the plugin package stays small and icons update without republishing), plus the Inter/Roboto Mono webfonts used by the UI. Also calls the Vercel-hosted /api/verify-license endpoint to verify a Gumroad license key for unlocking paid categories, since Figma Payments does not support payouts to India."
   }
 }

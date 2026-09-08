@@ -5,14 +5,12 @@
 
 figma.showUI(__html__, { width: 400, height: 640, themeColors: false });
 
-async function currentPaymentStatus() {
-  // figma.payments is undefined when payments aren't configured for this
-  // plugin yet (e.g. during local dev before the plugin has been created as
-  // a draft in the Figma dashboard). Treat that as "paid" locally so you can
-  // build/test the full UI before payments are wired up for real.
-  if (!figma.payments) return { type: "paid", devFallback: true };
-  return figma.payments.status;
-}
+// No figma.payments here: Figma Payments (Stripe Connect) doesn't support
+// payouts to India, so unlocking is handled entirely in ui.html via a
+// Gumroad license key checked against /api/verify-license, with the
+// unlocked flag stored in the UI iframe's own localStorage. This thread
+// never needs to know the payment/unlock state -- ui.html only sends an
+// insert-icon message once it has already decided the icon is allowed.
 
 function placeAndSelect(node) {
   node.x = Math.round(figma.viewport.center.x - node.width / 2);
@@ -56,24 +54,6 @@ figma.ui.onmessage = async (msg) => {
       return;
     }
 
-    if (msg.type === "get-payment-status") {
-      const status = await currentPaymentStatus();
-      figma.ui.postMessage({ type: "payment-status", status });
-      return;
-    }
-
-    if (msg.type === "checkout") {
-      if (!figma.payments) {
-        // Local-dev fallback: nothing to check out against yet.
-        figma.ui.postMessage({ type: "payment-status", status: { type: "paid", devFallback: true } });
-        return;
-      }
-      await figma.payments.initiateCheckoutAsync({ interstitial: "PAID_FEATURE" });
-      const status = await currentPaymentStatus();
-      figma.ui.postMessage({ type: "payment-status", status });
-      return;
-    }
-
     if (msg.type === "close") {
       figma.closePlugin();
       return;
@@ -82,8 +62,3 @@ figma.ui.onmessage = async (msg) => {
     figma.ui.postMessage({ type: "error", message: String((err && err.message) || err) });
   }
 };
-
-(async () => {
-  const status = await currentPaymentStatus();
-  figma.ui.postMessage({ type: "payment-status", status });
-})();

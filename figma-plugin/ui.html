@@ -185,8 +185,23 @@
     border: none; border-radius: 8px; padding: 10px; font-family: "Roboto Mono", monospace;
     font-weight: 500; font-size: 12px; cursor: pointer;
   }
-  .paywall-unlock { background: var(--toggle-active-bg); color: var(--text-invert); }
+  .paywall-unlock {
+    background: var(--toggle-active-bg); color: var(--text-invert); text-decoration: none;
+    display: block; text-align: center;
+  }
   .paywall-cancel { background: transparent; color: var(--text-primary); }
+  .paywall-divider { font-size: 11px; color: var(--text-alpha-tertiary); text-align: center; }
+  .paywall-license-row { display: flex; gap: 8px; }
+  .paywall-license-row input {
+    flex: 1; min-width: 0; border: 1px solid var(--border-alpha); border-radius: 8px; padding: 8px 10px;
+    font-family: "Roboto Mono", monospace; font-size: 12px; color: var(--text-primary); outline: none;
+  }
+  .paywall-verify {
+    border: 1px solid var(--toggle-active-bg); border-radius: 8px; padding: 0 12px; background: transparent;
+    color: var(--text-primary); font-family: "Roboto Mono", monospace; font-weight: 500; font-size: 12px; cursor: pointer;
+  }
+  .paywall-error { margin: 0; font-size: 11px; color: #e53935; text-align: center; }
+  .paywall-error[hidden] { display: none; }
 
   .toast {
     position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); background: var(--toggle-active-bg);
@@ -262,8 +277,14 @@
 <div class="paywall-overlay" id="paywallOverlay" hidden>
   <div class="paywall">
     <h3>Unlock full access</h3>
-    <p>Browsing every category is free. Inserting icons from the General category is free forever, too. Unlock every other category to insert with a one-time payment.</p>
-    <button class="paywall-unlock" id="paywallUnlockBtn" type="button">Unlock (one-time payment)</button>
+    <p>Browsing every category is free. Inserting icons from the General category is free forever, too. Unlock every other category with a one-time payment.</p>
+    <a class="paywall-unlock" id="paywallBuyBtn" href="#" target="_blank" rel="noopener">Unlock (one-time payment)</a>
+    <p class="paywall-divider">Already purchased?</p>
+    <div class="paywall-license-row">
+      <input id="licenseInput" type="text" placeholder="Enter your license key" spellcheck="false" autocomplete="off" />
+      <button class="paywall-verify" id="verifyLicenseBtn" type="button">Verify</button>
+    </div>
+    <p class="paywall-error" id="paywallError" hidden></p>
     <button class="paywall-cancel" id="paywallCancelBtn" type="button">Not now</button>
   </div>
 </div>
@@ -275,17 +296,45 @@
   "use strict";
 
   const BASE_URL = "https://wadekarprathmesh7.github.io/forma/";
-  // The only thing gated behind payment is inserting an icon from a
-  // category other than this one onto the canvas (see insertIcon).
-  // Browsing every category/weight/colour is unrestricted for everyone.
+  // The only thing gated is inserting an icon from a category other than
+  // this one onto the canvas (see insertIcon). Browsing every category/
+  // weight/colour is unrestricted for everyone.
   const FREE_CATEGORY = "general";
   const ALL_CATEGORY = "all";
   const DEFAULT_WEIGHT_INDEX = 0; // Light
   const DEFAULT_COLOUR = "#000000";
   const PRESET_SWATCHES = ["#000000", "#FFFFFF", "#9E9E9E", "#2979FF", "#00C853", "#FFD600", "#FF3D00"];
 
+  // Figma Payments (Stripe Connect) doesn't support payouts to India, so
+  // unlocking runs through a Gumroad license key instead -- same model as
+  // the web app, verified against the same server-side endpoint. Figma's
+  // review guidelines explicitly allow directing users to a third party
+  // for monetization, as long as it's disclosed (it is, in the listing).
+  const GUMROAD_CHECKOUT_URL = "https://3745349451615.gumroad.com/l/kqytts";
+  const LICENSE_API_URL = "https://forma-gamma-seven.vercel.app/api/verify-license";
+  const LICENSE_STORAGE_KEY = "forma_unlocked";
+
+  let unlockedThisSession = false; // fallback when localStorage is blocked
+
+  function isUnlocked() {
+    if (unlockedThisSession) return true;
+    try {
+      return localStorage.getItem(LICENSE_STORAGE_KEY) === "true";
+    } catch {
+      return false; // private/blocked storage
+    }
+  }
+
+  function setUnlocked() {
+    unlockedThisSession = true;
+    try {
+      localStorage.setItem(LICENSE_STORAGE_KEY, "true");
+    } catch {
+      /* ignore -- unlock still applies for the rest of this session */
+    }
+  }
+
   const state = {
-    paid: false,
     category: FREE_CATEGORY,
     weightIndex: DEFAULT_WEIGHT_INDEX,
     colour: DEFAULT_COLOUR,
@@ -318,8 +367,11 @@
     hexInput: document.getElementById("hexInput"),
     content: document.getElementById("content"),
     paywallOverlay: document.getElementById("paywallOverlay"),
-    paywallUnlockBtn: document.getElementById("paywallUnlockBtn"),
+    paywallBuyBtn: document.getElementById("paywallBuyBtn"),
     paywallCancelBtn: document.getElementById("paywallCancelBtn"),
+    licenseInput: document.getElementById("licenseInput"),
+    verifyLicenseBtn: document.getElementById("verifyLicenseBtn"),
+    paywallError: document.getElementById("paywallError"),
     toast: document.getElementById("toast"),
   };
 
@@ -345,17 +397,14 @@
     showToast._t = setTimeout(() => { els.toast.hidden = true; }, 1800);
   }
 
-  // ---------- Payment status / paywall ----------
+  // ---------- Paywall (Gumroad license key) ----------
   // Browsing (category, weight, colour) is unrestricted for everyone; only
   // inserting a non-General icon onto the canvas is gated (see insertIcon
-  // and the per-tile lock badge in render()). This just needs to refresh
-  // those tile badges when payment status changes.
-  function applyPaymentStateToUI() {
-    renderCategoryPopover();
-    render();
-  }
+  // and the per-tile lock badge in render()).
+  els.paywallBuyBtn.href = GUMROAD_CHECKOUT_URL;
 
   function openPaywall() {
+    els.paywallError.hidden = true;
     els.paywallOverlay.hidden = false;
   }
   function closePaywall() {
@@ -365,18 +414,49 @@
   els.paywallOverlay.addEventListener("click", (e) => {
     if (e.target === els.paywallOverlay) closePaywall();
   });
-  els.paywallUnlockBtn.addEventListener("click", () => {
-    parent.postMessage({ pluginMessage: { type: "checkout" } }, "*");
+
+  function showPaywallError(message) {
+    els.paywallError.textContent = message;
+    els.paywallError.hidden = false;
+  }
+
+  els.verifyLicenseBtn.addEventListener("click", async () => {
+    const key = els.licenseInput.value.trim();
+    if (!key) {
+      showPaywallError("Enter your license key first.");
+      return;
+    }
+    els.verifyLicenseBtn.disabled = true;
+    els.verifyLicenseBtn.textContent = "...";
+    els.paywallError.hidden = true;
+    try {
+      const res = await fetch(LICENSE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ licenseKey: key }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.valid) {
+        setUnlocked();
+        closePaywall();
+        showToast("Unlocked! Thanks for your purchase.");
+        renderCategoryPopover();
+        render();
+      } else {
+        showPaywallError(data.reason || "That license key doesn't look valid.");
+      }
+    } catch {
+      showPaywallError("Couldn't verify right now. Check your connection and try again.");
+    } finally {
+      els.verifyLicenseBtn.disabled = false;
+      els.verifyLicenseBtn.textContent = "Verify";
+    }
   });
 
   window.onmessage = (event) => {
     const msg = event.data.pluginMessage;
     if (!msg) return;
-    if (msg.type === "payment-status") {
-      state.paid = msg.status && msg.status.type === "paid";
-      applyPaymentStateToUI();
-      if (state.paid) closePaywall();
-    } else if (msg.type === "insert-icon-done") {
+    if (msg.type === "insert-icon-done") {
       showToast("Inserted");
     } else if (msg.type === "error") {
       showToast("Error: " + msg.message);
@@ -639,7 +719,7 @@
   async function insertIcon(icon) {
     // icon.category is the icon's own origin category, not necessarily
     // state.category -- in the "All icons" view they can differ.
-    const locked = icon.category !== FREE_CATEGORY && !state.paid;
+    const locked = icon.category !== FREE_CATEGORY && !isUnlocked();
     if (locked) {
       openPaywall();
       return;
@@ -684,7 +764,7 @@
     for (const icon of icons) {
       // Locked per icon, not per view: in "All icons" every icon keeps
       // whatever lock status its own category would give it on its own.
-      const locked = icon.category !== FREE_CATEGORY && !state.paid;
+      const locked = icon.category !== FREE_CATEGORY && !isUnlocked();
 
       const tile = document.createElement("button");
       tile.type = "button";
@@ -730,7 +810,6 @@
     renderSwatchRow();
     renderCategoryPopover();
     els.hexInput.value = state.colour;
-    parent.postMessage({ pluginMessage: { type: "get-payment-status" } }, "*");
     await render();
   }
 
